@@ -3,10 +3,10 @@ pipelines-jobs:
     image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
   committees:
     image: orihoch/knesset-data-pipelines@sha256:5b1ac05b4e95b77a742a7c238a85916610059833be3b2b0e04e7554decd19b45
-#  committeesProtocols:
-#    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
-#  committeesProtocolsParse:
-#    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
+  committeesProtocols:
+    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
+  committeesProtocolsParse:
+    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
   laws:
     image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
   members:
