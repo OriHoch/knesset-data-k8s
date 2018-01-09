@@ -1,0 +1,7 @@
+*.sql
+*.sh
+*.py
+secret*
+environments
+.env
+*.md

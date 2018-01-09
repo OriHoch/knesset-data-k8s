@@ -1,0 +1,99 @@
+{{ if .Values.votes }}
+#apiVersion: batch/v1
+#kind: Job
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: pipelines-votes
+spec:
+  schedule: "@daily"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: pipelines-votes
+        spec:
+          containers:
+          {{ if .Values.votes.enableSocksProxy }}
+          - name: ssh-socks-proxy
+            image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
+            resources: {"requests": {"cpu": "1m", "memory": "3Mi"}}
+            command:
+            - bash
+            - "-c"
+            - |
+              /start.sh &
+              while ! [ -e /pipelines/data/stop-ssh-socks-proxy ]; do
+                sleep 5
+                echo .
+              done
+              exit 0
+            env:
+            - name: SSH_HOST
+              value: ubuntu@db1.oknesset.org
+            - name: SSH_PORT
+              value: "22"
+            - name: SOCKS_PORT
+              value: "8123"
+            - name: SSH_B64_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ssh-socks-proxy"
+                  key: "SSH_B64_KEY"
+            - name: SSH_B64_PUBKEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ssh-socks-proxy"
+                  key: "SSH_B64_PUBKEY"
+            volumeMounts:
+            - name: data
+              mountPath: /pipelines/data
+          {{ end }}
+          - name: pipelines
+            image: {{ .Values.votes.image | quote }}
+            resources: {"requests": {"cpu": "200m", "memory": "200Mi"}}
+            command:
+            - bash
+            - "-c"
+            - |
+              while ! [ -e /pipelines/data/synced ]; do sleep 5 && echo .; done && rm -f /pipelines/data/synced &&\
+              dpp run ./votes/votes &&\
+              touch /pipelines/data/done &&\
+              touch /pipelines/data/stop-ssh-socks-proxy
+            {{ if .Values.votes.enableSocksProxy }}
+            env:
+            - name: DATASERVICE_HTTP_PROXY
+              value: socks5h://localhost:8123
+            {{ end }}
+            volumeMounts: [{"name": "data", "mountPath": "/pipelines/data"}]
+          - name: ops
+            image: orihoch/sk8sops:pipelines-gcs@sha256:c232fcbd4ffff456b9cb9312a4b7d62cec8c0fe6b36bf31e50625a618f129746
+            resources: {"requests": {"cpu": "1m", "memory": "2Mi"}}
+            env:
+            - name: CLOUDSDK_CORE_PROJECT
+              value: hasadna-oknesset
+            - name: GS_BUCKET_NAME
+              value: knesset-data-pipelines
+            - name: OUTPUT_PATH_PREFIX
+              value: data/
+            - name: SYNC_ARGS
+              value: "-a public-read"
+            - name: DISABLE_TIMESTAMP
+              value: "1"
+            volumeMounts:
+            - name: data
+              mountPath: /pipelines/data
+            - name: k8s-ops
+              mountPath: /k8s-ops
+              readOnly: true
+          volumes:
+          # this is the k8s ops secret, see https://github.com/OriHoch/sk8s-ops/blob/master/README.md#secrets
+          - name: k8s-ops
+            secret:
+              secretName: ops
+          # empty dir is stored on host and shared between all container in pod, we use it to sync data between the pods
+          - name: data
+            emptyDir: {}
+          restartPolicy: Never
+{{ end }}
