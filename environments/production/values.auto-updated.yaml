@@ -1,1 +1,2 @@
-{}
+pipelines-jobs:
+  committeesImage: gcr.io/uumpa123/knesset-data-committees-cd:11df7940dc487dffe7f46041bd9a56621cebee45
