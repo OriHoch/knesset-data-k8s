@@ -7,7 +7,7 @@ global:
 pipelines-jobs:
   enabled: true
   image: orihoch/knesset-data-pipelines:sk8s-pipelines-v0.0.3-g
-  committeesImage: orihoch/knesset-data-committees:v0.0.1-c-sk8s-g
+  committeesImage: orihoch/knesset-data-committees:v0.0.1-d
 
   # main dataservice and related downloads
   dataservices: {"enabled": true}
