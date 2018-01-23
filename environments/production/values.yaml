@@ -8,12 +8,7 @@ pipelines-jobs:
   committeesImage: orihoch/knesset-data-committees:v0.0.1-c-sk8s-g
 
   # main dataservice and related downloads
-  bills: {"enabled": true}
-  committees: {"enabled": true}
-  laws: {"enabled": true}
-  members: {"enabled": true}
-  plenum: {"enabled": true}
-  votes: {"enabled": true}
+  dataservices: {"enabled": true}
 
   # download and parse committee protocols
   committeesProtocols: {"enabled": true}

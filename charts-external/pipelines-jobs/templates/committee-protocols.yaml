@@ -17,36 +17,17 @@ metadata:
 data:
   PIPELINES_SCRIPT: |
     cd /pipelines &&\
-    dpp run ./committees/download_document_committee_session &&\
-    rm -rf /pipelines/data/committees/kns_documentcommitteesession/
+    (
+      RES=0;
+
+      ! run_pipeline ./committees/download_document_committee_session && RES=1;
+      ! run_pipeline ./committees/parse_meeting_protocols_text && RES=1;
+      ! run_pipeline ./committees/parse_meeting_protocols_parts && RES=1;
+
+      rm -rf /pipelines/data/committees/kns_documentcommitteesession;
+      exit $RES
+    )
   FILES_LIMIT: "1000"
   CHECK_REMOTE_STORAGE: https://storage.googleapis.com/knesset-data-pipelines/data/committees/download_document_committee_session/
 ---
 {{ dict "name" "pipeline-committee-protocols" "Values" .Values "enabled" .Values.committeesProtocols.enabled "opsEnvFrom" true | include "pipeline-job" }}
----
-
-#
-# committee-protocols-parse
-#
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pipeline-committee-protocols-parse-ops-envfrom
-data:
-  INITIAL_SYNC_SCRIPT: |
-    mkdir -p /pipelines/data/committees/download_document_committee_session &&\
-    gsutil -m rsync -r -x 'files/.*$' gs://knesset-data-pipelines/data/committees/download_document_committee_session/ /pipelines/data/committees/download_document_committee_session/
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pipeline-committee-protocols-parse-envfrom
-data:
-  PIPELINES_SCRIPT: |
-    cd /pipelines &&\
-    dpp run ./committees/parse_meeting_protocols_text &&\
-    dpp run ./committees/parse_meeting_protocols_parts &&\
-    rm -rf /pipelines/data/committees/download_document_committee_session/
-  FILES_LIMIT: "1000"
----
-{{ dict "name" "pipeline-committee-protocols-parse" "Values" .Values "enabled" .Values.committeesProtocols.enabled "opsEnvFrom" true | include "pipeline-job" }}

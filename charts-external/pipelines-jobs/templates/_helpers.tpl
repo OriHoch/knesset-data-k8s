@@ -16,6 +16,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 0
       containers:
+      {{ if .enableProxy }}
       - name: ssh-socks-proxy
         image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
         resources: {"requests": {"cpu": "1m", "memory": "3Mi"}}
@@ -36,6 +37,7 @@ spec:
             secretKeyRef:
               name: "ssh-socks-proxy"
               key: "SSH_B64_PUBKEY"
+      {{ end }}
       - name: pipelines
         image: {{ .image | default .Values.image | quote }}
         resources:
@@ -57,8 +59,10 @@ spec:
           value: exit
         - name: STATE_PATH
           value: /state
+        {{ if .enableProxy }}
         - name: DATASERVICE_HTTP_PROXY
           value: socks5h://localhost:8123
+        {{ end }}
         envFrom:
         - configMapRef:
             name: {{ .name }}-envfrom

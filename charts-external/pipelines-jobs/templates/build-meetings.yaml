@@ -8,11 +8,17 @@ metadata:
 data:
   PIPELINES_SCRIPT: |
     cd /pipelines &&\
-    dpp run ./download &&\
-    dpp run ./join-meetings &&\
-    dpp run ./download_members &&\
-    dpp run ./build &&\
-    rm -rf /pipelines/data/* &&\
-    mv /pipelines/dist /pipelines/data/
+    (
+      RES=0;
+
+      ! run_pipeline ./download && RES=1;
+      ! run_pipeline ./join-meetings && RES=1;
+      ! run_pipeline ./download_members && RES=1;
+      ! run_pipeline ./build && RES=1;
+
+      rm -rf /pipelines/data/*
+      mv /pipelines/dist /pipelines/data/
+      exit $RES
+    )
 ---
 {{ dict "name" "pipeline-committee-build-meetings" "Values" .Values "enabled" .Values.committeesBuildMeetings.enabled "image" .Values.committeesImage | include "pipeline-job" }}
