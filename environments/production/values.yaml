@@ -1,6 +1,8 @@
 global:
   enableRootChart: true
   environmentName: production
+  googleProjectId: hasadna-oknesset
+  backupsBucketName: oknesset-k8s-backups
 
 pipelines-jobs:
   enabled: true
@@ -19,3 +21,24 @@ pipelines-jobs:
 
 metrics:
   enabled: true
+
+nginx:
+  enabled: true
+  enablePipelineDashboards: true
+  mainDomain: production.oknesset.org
+
+traefik:
+  enabled: true
+  acmeDomains: |
+    [[acme.domains]]
+      main = "production.oknesset.org"
+  acmeEmail: ori@uumpa.com
+  dnsProvider: route53
+  # AWS IAM user name = oknesset-route53-api
+  # kubectl create secret generic route53 --from-literal=AWS_SECRET_ACCESS_KEY=***
+  AWS_ACCESS_KEY_ID: AKIAIWMQWDTIM7IZS3EA
+  AWS_REGION: "eu-west-1"
+  # gcloud compute addresses create oknesset-production-traefik --region=us-central1
+  # gcloud compute addresses describe oknesset-production-traefik --region=us-central1 | grep ^address:
+  loadBalancerIP: "35.184.112.37"
+  enableLoadBalancer: true

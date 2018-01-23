@@ -1,0 +1,63 @@
+{{ if .Values.nginx.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  # default backend from traefik
+  default.conf: |
+    server {
+      listen 80;
+      server_name _;
+
+      include /etc/nginx/conf.d/healthcheck.inc;
+
+      {{ if .Values.nginx.enablePipelineDashboards }}
+      {{ if index .Values "pipelines-jobs" "dataservices" "enabled" }}
+      location /pipeline/dataservices1/ {
+        proxy_pass http://pipeline-dataservices1:5000/;
+      }
+      location /pipeline/dataservices2/ {
+        proxy_pass http://pipeline-dataservices2:5000/;
+      }
+      {{ end }}
+
+      {{ if index .Values "pipelines-jobs" "committeesProtocols" "enabled" }}
+      location /pipeline/committee-protocols/ {
+        proxy_pass http://pipeline-committee-protocols:5000/;
+      }
+      {{ end }}
+
+      {{ if index .Values "pipelines-jobs" "committeesBuildMeetings" "enabled" }}
+      location /pipeline/committee-build-meetings/ {
+        proxy_pass http://pipeline-committee-build-meetings:5000/;
+      }
+      {{ end }}
+
+      location = /pipeline {
+        return 200 '<a href="http://{{ .Values.nginx.mainDomain }}/pipeline/dataservices1/">dataservices1</a>
+                    <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/dataservices2/">dataservices2</a>
+                    <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/committee-protocols/">committee-protocols</a>
+                    <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/committee-build-meetings/">committee-build-meetings</a>';
+        add_header Content-Type text/html;
+      }
+      {{ end }}
+    }
+
+  healthcheck.inc: |
+    location = / {
+        return 200 'it works!';
+        add_header Content-Type text/plain;
+    }
+
+  restricted.inc: |
+    {{ if .Values.nginx.htpasswdSecretName }}
+    auth_basic "Restricted Content";
+    auth_basic_user_file /etc/nginx/htpasswd/secret-nginx-htpasswd;
+    {{ else }}
+    {{ if .Values.traefik.enabled }}
+      ERROR!! CANNOT ENABLE TRAEFIK WITHOUT AUTHENTICATION!
+    {{ end }}
+    {{ end }}
+
+{{ end }}

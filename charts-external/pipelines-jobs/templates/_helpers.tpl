@@ -1,5 +1,16 @@
 {{- define "pipeline-job" -}}
 {{ if .enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name | quote }}
+spec:
+  selector:
+    app: {{ .name | quote }}
+  ports:
+  - name: "5000"
+    port: 5000
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:

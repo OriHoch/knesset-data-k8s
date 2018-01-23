@@ -30,4 +30,4 @@ data:
   FILES_LIMIT: "1000"
   CHECK_REMOTE_STORAGE: https://storage.googleapis.com/knesset-data-pipelines/data/committees/download_document_committee_session/
 ---
-{{ dict "name" "pipeline-committee-protocols" "Values" .Values "enabled" .Values.committeesProtocols.enabled "opsEnvFrom" true | include "pipeline-job" }}
+{{ dict "name" "pipeline-committee-protocols" "Values" .Values "enabled" .Values.committeesProtocols.enabled "opsEnvFrom" true "enableProxy" true | include "pipeline-job" }}
