@@ -1,0 +1,107 @@
+{{ if .Values.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics-grafana
+spec:
+  selector:
+    app: metrics-grafana
+  ports:
+  - name: "3000"
+    port: 3000
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: metrics-grafana
+spec:
+  replicas: 1
+  strategy: {type: "Recreate"}
+  template:
+    metadata:
+      labels:
+        app: metrics-grafana
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: grafana
+        image: grafana/grafana
+        command:
+        - bash
+        - "-c"
+        - |
+          echo "waiting for db to be ready..."
+          while ! [ -e /state/db_ready ]; do sleep 2; echo .; done; rm -f /state/db_ready
+          /run.sh
+        env:
+        - name: GF_SERVER_ROOT_URL
+          value: {{ .Values.GF_SERVER_ROOT_URL | default "http://localhost:3000/" | quote}}
+        {{ if .Values.anonymousEnabled }}
+        - {name: GF_AUTH_ANONYMOUS_ENABLED, value: "true"}
+        - {name: GF_AUTH_ANONYMOUS_ORG_NAME, value: main}
+        - {name: GF_AUTH_ANONYMOUS_ORG_ROLE, value: anonymous}
+        {{ end }}
+        - {name: GF_DATABASE_TYPE, value: "postgres"}
+        - {name: GF_DATABASE_HOST, value: "127.0.0.1"}
+        - {name: GF_DATABASE_NAME, value: "postgres"}
+        - {name: GF_DATABASE_USER, value: "postgres"}
+        - {name: GF_DATABASE_PASSWORD, value: "123456"}
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "200Mi"
+        volumeMounts:
+        - name: state
+          mountPath: /state
+      - name: db
+        image: postgres:9
+        ports:
+        - containerPort: 5432
+        resources:
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        env:
+        - {name: POSTGRES_PASSWORD, value: "123456"}
+        volumeMounts:
+        - name: dbdata
+          mountPath: /var/lib/postgresql/data
+      - name: ops
+        image: orihoch/sk8s-ops:v0.0.3b-postgres-4
+        resources: {"requests": {"cpu": "1m", "memory": "2Mi"}}
+        env:
+        - name: CLOUDSDK_CORE_PROJECT
+          value: hasadna-oknesset
+        - name: GS_BUCKET_NAME
+          value: knesset-data-k8s-backups
+        - name: DATA_PATH
+          value: /dbdump
+        - name: STATE_PATH
+          value: /state
+        - name: BACKUP_FREQUENCY_SECONDS
+          value: "86400"
+        - name: PGPASS
+          value: "123456"
+        - name: OUTPUT_PATH_PREFIX
+          value: metrics-grafana-db
+        volumeMounts:
+        - name: dbdump
+          mountPath: /dbdump
+        - name: state
+          mountPath: /state
+        - name: k8s-ops
+          mountPath: /k8s-ops
+          readOnly: true
+      volumes:
+        - name: k8s-ops
+          secret:
+            secretName: ops
+        - name: dbdump
+          emptyDir: {}
+        - name: state
+          emptyDir: {}
+        - name: dbdata
+          emptyDir: {}
+{{ end }}

@@ -1,19 +1,26 @@
+global:
+  enableRootChart: true
+  environmentName: production
+
 pipelines-jobs:
-  bills:
-    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
-  committees:
-    image: orihoch/knesset-data-pipelines@sha256:5b1ac05b4e95b77a742a7c238a85916610059833be3b2b0e04e7554decd19b45
-  committeesProtocols:
-    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
-  committeesProtocolsParse:
-    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
-  laws:
-    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
-  members:
-    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
-  plenum:
-    image: orihoch/knesset-data-pipelines@sha256:a37fcd2455c9d7d75b3f990d7a3034635af1bd90bdd9af6cdacc39ca0afe242f
-  votes:
-    image: orihoch/knesset-data-pipelines@sha256:31bf19677163483edd1a2968af086eb9abadc9c8a2a06b23b3b6bf75cc3dc97a
-    # see https://github.com/OriHoch/sk8s/blob/master/charts-external/ssh-socks-proxy/README.md
-    enableSocksProxy: true
+  enabled: true
+  image: orihoch/knesset-data-pipelines:sk8s-pipelines-v0.0.3-g
+  committeesImage: orihoch/knesset-data-committees:v0.0.1-c-sk8s-g
+
+  # main dataservice and related downloads
+  bills: {"enabled": true}
+  committees: {"enabled": true}
+  laws: {"enabled": true}
+  members: {"enabled": true}
+  plenum: {"enabled": true}
+  votes: {"enabled": true}
+
+  # download and parse committee protocols
+  committeesProtocols: {"enabled": true}
+  committeesProtocolsParse: {"enabled": true}
+
+  # build the meetings html pages
+  committeesBuildMeetings: {"enabled": true}
+
+metrics:
+  enabled: true

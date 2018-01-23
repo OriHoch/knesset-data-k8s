@@ -1,0 +1,108 @@
+#
+# bills
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-bills-envfrom
+data:
+  PIPELINES_SCRIPT: |
+    cd /pipelines &&\
+    run_pipeline ./bills/kns_bill &&\
+    run_pipeline ./bills/kns_billname &&\
+    run_pipeline ./bills/kns_billinitiator &&\
+    run_pipeline ./bills/kns_billhistoryinitiator &&\
+    run_pipeline ./bills/kns_billsplit &&\
+    run_pipeline ./bills/kns_billunion
+---
+{{ dict "name" "pipeline-bills" "Values" .Values "enabled" .Values.bills.enabled | include "pipeline-job" }}
+---
+
+#
+# committees
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-committees-envfrom
+data:
+  PIPELINES_SCRIPT: |
+    cd /pipelines &&\
+    run_pipeline ./committees/kns_committee &&\
+    run_pipeline ./committees/kns_jointcommittee &&\
+    run_pipeline ./committees/kns_cmtsitecode &&\
+    run_pipeline ./committees/kns_committeesession &&\
+    run_pipeline ./committees/kns_cmtsessionitem &&\
+    run_pipeline ./committees/kns_documentcommitteesession
+---
+{{ dict "name" "pipeline-committees" "Values" .Values "enabled" .Values.committees.enabled | include "pipeline-job" }}
+---
+
+#
+# laws
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-laws-envfrom
+data:
+  PIPELINES_SCRIPT: |
+    cd /pipelines &&\
+    run_pipeline ./laws/kns_law &&\
+    run_pipeline ./laws/kns_law_binding &&\
+    run_pipeline ./laws/kns_document_law &&\
+    run_pipeline ./laws/kns_israel_law &&\
+    run_pipeline ./laws/kns_israel_law_name
+---
+{{ dict "name" "pipeline-laws" "Values" .Values "enabled" .Values.laws.enabled | include "pipeline-job" }}
+---
+
+#
+# members
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-members-envfrom
+data:
+  PIPELINES_SCRIPT: |
+    cd /pipelines &&\
+    run_pipeline ./members/kns_person &&\
+    run_pipeline ./members/kns_position &&\
+    run_pipeline ./members/kns_persontoposition &&\
+    run_pipeline ./members/kns_mksitecode &&\
+    run_pipeline ./members/mk_individual
+---
+{{ dict "name" "pipeline-members" "Values" .Values "enabled" .Values.members.enabled | include "pipeline-job" }}
+---
+
+#
+# plenum
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-plenum-envfrom
+data:
+  PIPELINES_SCRIPT: |
+    cd /pipelines &&\
+    run_pipeline ./plenum/kns_plenumsession &&\
+    run_pipeline ./plenum/kns_plmsessionitem &&\
+    run_pipeline ./plenum/kns_documentplenumsession
+---
+{{ dict "name" "pipeline-plenum" "Values" .Values "enabled" .Values.plenum.enabled | include "pipeline-job" }}
+---
+
+#
+# votes
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-votes-envfrom
+data:
+  PIPELINES_SCRIPT: |
+    cd /pipelines &&\
+    run_pipeline ./votes/votes
+---
+{{ dict "name" "pipeline-votes" "Values" .Values "enabled" .Values.votes.enabled | include "pipeline-job" }}
