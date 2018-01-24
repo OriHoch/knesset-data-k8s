@@ -6,7 +6,7 @@ global:
 
 pipelines-jobs:
   enabled: true
-  image: orihoch/knesset-data-pipelines:sk8s-pipelines-v0.0.3-g
+  image: orihoch/knesset-data-pipelines:sk8s-pipelines-v0.0.3-g-3
   committeesImage: orihoch/knesset-data-committees:v0.0.1-d
 
   # main dataservice and related downloads
@@ -21,11 +21,13 @@ pipelines-jobs:
 
 metrics:
   enabled: true
+  GF_SERVER_DOMAIN: production.oknesset.org
 
 nginx:
   enabled: true
   enablePipelineDashboards: true
   mainDomain: production.oknesset.org
+  htpasswdSecretName: nginx-htpasswd
 
 traefik:
   enabled: true

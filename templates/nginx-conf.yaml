@@ -42,6 +42,13 @@ data:
         add_header Content-Type text/html;
       }
       {{ end }}
+
+      {{ if .Values.metrics.enabled }}
+      location /grafana/ {
+        proxy_pass http://metrics-grafana:3000/;
+        include /etc/nginx/conf.d/restricted.inc;
+      }
+      {{ end }}
     }
 
   healthcheck.inc: |

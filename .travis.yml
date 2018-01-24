@@ -3,7 +3,6 @@ sudo: required
 env:
   matrix:
   - DEPLOY_ENVIRONMENT=production DEPLOY_BRANCH=master
-#  - DEPLOY_ENVIRONMENT=production DEPLOY_TAGS=true
 services:
 - docker
 script:
@@ -21,9 +20,10 @@ script:
       wget https://raw.githubusercontent.com/OriHoch/sk8s-ops/master/run_docker_ops.sh
       chmod +x run_docker_ops.sh
       if ./run_docker_ops.sh "${K8S_ENVIRONMENT_NAME}" "
-         RES=0;
-         ! ./helm_upgrade_external_chart.sh pipelines-jobs --force && echo 'failed pipelines-jobs upgrade' && RES=1;
-         exit "'$'"RES
+        cd /ops &&\
+        ./helm_upgrade.sh &&\
+        ./helm_upgrade_external_chart.sh metrics &&\
+        ./helm_upgrade_external_chart.sh pipelines-jobs
       " "orihoch/sk8s-ops" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}"; then
         true
       else
