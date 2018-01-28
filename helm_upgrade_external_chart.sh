@@ -2,6 +2,10 @@
 
 source connect.sh
 
+usage() {
+    echo "Usage: ./helm_upgrade_external_chart.sh <EXTERNAL_CHART_NAME> [HELM_UPGRADE_ARGS].."
+}
+
 CHART_NAME="${1}"
 
 [ -z "${CHART_NAME}" ] && usage && exit 1
@@ -20,7 +24,7 @@ echo '{}' > "${TEMPDIR}/values.yaml"
 
 for VALUES_FILE in values.yaml environments/${K8S_ENVIRONMENT_NAME}/values.yaml environments/${K8S_ENVIRONMENT_NAME}/values.auto-updated.yaml
 do
-    if [ -f "${VALUES_FILE}" ]; then
+    if [ -e "${VALUES_FILE}" ]; then
         GLOBAL_VALUES=`./read_yaml.py "${VALUES_FILE}" global 2>/dev/null`
         ! [ -z "${GLOBAL_VALUES}" ] \
             && ./update_yaml.py '{"global":'${GLOBAL_VALUES}'}' "${TEMPDIR}/values.yaml"

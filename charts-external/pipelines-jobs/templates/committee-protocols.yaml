@@ -20,6 +20,7 @@ data:
     (
       RES=0;
 
+      ! run_pipeline ./committees/gcs_document_committee_session_files && RES=1;
       ! run_pipeline ./committees/download_document_committee_session && RES=1;
       ! run_pipeline ./committees/parse_meeting_protocols_text && RES=1;
       ! run_pipeline ./committees/parse_meeting_protocols_parts && RES=1;
@@ -29,4 +30,4 @@ data:
     )
   CHECK_REMOTE_STORAGE: https://storage.googleapis.com/knesset-data-pipelines/data/committees/download_document_committee_session/
 ---
-{{ dict "name" "pipeline-committee-protocols" "Values" .Values "enabled" .Values.committeesProtocols.enabled "opsEnvFrom" true "enableProxy" true | include "pipeline-job" }}
+{{ dict "name" "pipeline-committee-protocols" "Values" .Values "enabled" .Values.committeesProtocols.enabled "opsEnvFrom" true "enableProxy" true "allowPipelineOps" true | include "pipeline-job" }}

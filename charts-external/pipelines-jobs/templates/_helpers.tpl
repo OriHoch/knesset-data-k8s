@@ -74,6 +74,10 @@ spec:
         - name: DATASERVICE_HTTP_PROXY
           value: socks5h://localhost:8123
         {{ end }}
+        {{ if .allowPipelineOps }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /k8s-ops/secret.json
+        {{ end }}
         envFrom:
         - configMapRef:
             name: {{ .name }}-envfrom
@@ -82,6 +86,11 @@ spec:
           mountPath: /pipelines/data
         - name: state
           mountPath: /state
+        {{ if .allowPipelineOps }}
+        - name: k8s-ops
+          mountPath: /k8s-ops
+          readOnly: true
+        {{ end }}
       - name: ops
         image: gcr.io/uumpa-public/sk8s-google-storage-sync:v0.0.3b
         resources:
