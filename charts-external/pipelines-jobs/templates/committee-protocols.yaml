@@ -20,7 +20,7 @@ data:
     (
       RES=0;
 
-      ! run_pipeline ./committees/gcs_document_committee_session_files && RES=1;
+      ! run_pipeline ./committees/gcs_list_files && RES=1;
       ! run_pipeline ./committees/download_document_committee_session && RES=1;
       ! run_pipeline ./committees/parse_meeting_protocols_text && RES=1;
       ! run_pipeline ./committees/parse_meeting_protocols_parts && RES=1;
