@@ -41,7 +41,7 @@ spec:
       # initops container - copies the acme data from last backup before starting up the pod
       - name: initops
         image: gcr.io/uumpa-public/sk8s-google-storage-sync:v0.0.2
-        resources: {"requests": {"cpu": "1m", "memory": "2Mi"}}
+        resources: {"requests": {"cpu": "20m", "memory": "20Mi"}}
         command:
         - bash
         - "-c"
@@ -60,7 +60,7 @@ spec:
       containers:
       - name: ops
         image: gcr.io/uumpa-public/sk8s-google-storage-sync:v0.0.2
-        resources: {"requests": {"cpu": "1m", "memory": "2Mi"}}
+        resources: {"requests": {"cpu": "20m", "memory": "20Mi"}}
         command:
         - bash
         - "-c"
@@ -102,8 +102,7 @@ spec:
         ports:
         - {containerPort: 80}
         - {containerPort: 443}
-        resources:
-          requests: {cpu: 20m}
+        resources: {"requests": {"cpu": "50m", "memory": "50Mi"}}
         volumeMounts:
         - name: etc-traefik
           mountPath: /etc-traefik

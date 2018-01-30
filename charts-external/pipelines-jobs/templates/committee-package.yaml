@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-committee-package-ops-envfrom
+data:
+  INITIAL_SYNC_SCRIPT: |
+    mkdir -p /pipelines/data/committees/meeting_protocols_text &&\
+    mkdir -p /pipelines/data/committees/meeting_protocols_parts &&\
+    mkdir -p /pipelines/data/committees/kns_cmtsessionitem &&\
+    mkdir -p /pipelines/data/committees/kns_committeesession &&\
+    gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/meeting_protocols_text/ \
+                       /pipelines/data/committees/meeting_protocols_text/
+    gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/meeting_protocols_parts/ \
+                       /pipelines/data/committees/meeting_protocols_parts/
+    gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/kns_cmtsessionitem/ \
+                       /pipelines/data/committees/kns_cmtsessionitem/
+    gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/kns_committeesession/ \
+                       /pipelines/data/committees/kns_committeesession/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-committee-package-envfrom
+data:
+  PIPELINES_SCRIPT: |
+    cd /pipelines &&\
+    (
+      RES=0;
+
+      ! run_pipeline ./committees/gcs_list_files && RES=1;
+      ! run_pipeline ./committees/join-meetings && RES=1;
+      ! run_pipeline ./committees/meetings_datapackage_zip && RES=1;
+
+      rm -rf /pipelines/data/committees/meeting_protocols_text;
+      rm -rf /pipelines/data/committees/meeting_protocols_parts;
+      rm -rf /pipelines/data/committees/kns_cmtsessionitem;
+      rm -rf /pipelines/data/committees/kns_committeesession;
+      exit $RES
+    )
+---
+{{ dict "name" "pipeline-committee-package" "Values" .Values "enabled" .Values.committeesPackage.enabled "opsEnvFrom" true "allowPipelineOps" true | include "pipeline-job" }}

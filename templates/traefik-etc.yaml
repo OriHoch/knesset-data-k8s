@@ -44,6 +44,12 @@ data:
       [backends.nginx]
         [backends.nginx.servers.server1]
           url = "http://nginx:80"
+
+      {{ if .Values.traefik.enableCommitteesNext }}
+      [backends.committeesnext]
+        [backends.committeesnext.servers.server1]
+          url = "http://nginx:81"
+      {{ end }}
       {{ end }}
 
     [frontends]
@@ -51,6 +57,14 @@ data:
       [frontends.default]
         backend="nginx"
         passHostHeader = true
+
+      {{ if .Values.traefik.enableCommitteesNext }}
+      [frontends.committeesnext]
+        backend="committeesnext"
+        passHostHeader = true
+          [frontends.committeesnext.routes.route1]
+            rule = "Host: {{ .Values.traefik.committeesNextDomain }};"
+      {{ end }}
       {{ end }}
 
 {{ end }}

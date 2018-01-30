@@ -14,7 +14,7 @@ pipelines-jobs:
 
   # download and parse committee protocols
   committeesProtocols: {"enabled": true}
-  committeesProtocolsParse: {"enabled": true}
+  committeesPackage: {"enabled": true}
 
   # build the meetings html pages
   committeesBuildMeetings: {"enabled": true}
@@ -34,6 +34,8 @@ traefik:
   acmeDomains: |
     [[acme.domains]]
       main = "production.oknesset.org"
+    [[acme.domains]]
+      main = "committees-next.oknesset.org"
   acmeEmail: ori@uumpa.com
   dnsProvider: route53
   # AWS IAM user name = oknesset-route53-api
@@ -44,3 +46,5 @@ traefik:
   # gcloud compute addresses describe oknesset-production-traefik --region=us-central1 | grep ^address:
   loadBalancerIP: "35.184.112.37"
   enableLoadBalancer: true
+  enableCommitteesNext: true
+  committeesNextDomain: committees-next.oknesset.org

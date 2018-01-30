@@ -4,7 +4,6 @@ kind: ConfigMap
 metadata:
   name: nginx-conf
 data:
-  # default backend from traefik
   default.conf: |
     server {
       listen 80;
@@ -50,6 +49,17 @@ data:
       }
       {{ end }}
     }
+
+    {{ if .Values.traefik.enableCommitteesNext }}
+    server {
+      listen 81;
+      server_name _;
+
+      location / {
+        proxy_pass https://storage.googleapis.com/knesset-data-pipelines/data/dist/;
+      }
+    }
+    {{ end }}
 
   healthcheck.inc: |
     location = / {
