@@ -8,14 +8,17 @@ data:
     mkdir -p /pipelines/data/committees/meeting_protocols_parts &&\
     mkdir -p /pipelines/data/committees/kns_cmtsessionitem &&\
     mkdir -p /pipelines/data/committees/kns_committeesession &&\
-    gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/meeting_protocols_text/ \
+    mkdir -p /pipelines/data/committees/all &&\
+    gsutil -m rsync -x files -r gs://knesset-data-pipelines/data/committees/meeting_protocols_text/ \
                        /pipelines/data/committees/meeting_protocols_text/
-    gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/meeting_protocols_parts/ \
+    gsutil -m rsync -x files -r gs://knesset-data-pipelines/data/committees/meeting_protocols_parts/ \
                        /pipelines/data/committees/meeting_protocols_parts/
     gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/kns_cmtsessionitem/ \
                        /pipelines/data/committees/kns_cmtsessionitem/
     gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/kns_committeesession/ \
                        /pipelines/data/committees/kns_committeesession/
+    gsutil -m rsync -r gs://knesset-data-pipelines/data/committees/all/ \
+                       /pipelines/data/committees/all/
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -30,6 +33,7 @@ data:
       ! run_pipeline ./committees/gcs_list_files && RES=1;
       ! run_pipeline ./committees/join-meetings && RES=1;
       ! run_pipeline ./committees/meetings_datapackage_zip && RES=1;
+      ! run_pipeline ./committees/all && RES=1;
 
       rm -rf /pipelines/data/committees/meeting_protocols_text;
       rm -rf /pipelines/data/committees/meeting_protocols_parts;
