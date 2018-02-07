@@ -4,5 +4,6 @@ metadata:
   name: pipeline-people-envfrom
 data:
   RUN_PIPELINE_CMD: run_pipeline
+  PIPELINES_SCRIPT: cd /pipelines && ./pipelines_script.sh
 ---
 {{ dict "name" "pipeline-people" "Values" .Values "enabled" .Values.people.enabled "image" .Values.peopleImage "outputPathPrefix" "data/people/" | include "pipeline-job" }}
