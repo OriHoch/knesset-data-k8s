@@ -8,6 +8,7 @@ pipelines-jobs:
   enabled: true
   image: orihoch/knesset-data-pipelines:sk8s-pipelines-v0.0.3-g-3
   committeesImage: orihoch/knesset-data-committees:v0.0.1-d
+  peopleImage: orihoch/knesset-data-people
 
   # main dataservice and related downloads
   dataservices: {"enabled": true}
@@ -18,6 +19,8 @@ pipelines-jobs:
 
   # build the meetings html pages
   committeesBuildMeetings: {"enabled": true}
+
+  people: {"enabled": true}
 
 metrics:
   enabled: true

@@ -39,12 +39,19 @@ data:
       }
       {{ end }}
 
+      {{ if index .Values "pipelines-jobs" "people" "enabled" }}
+      location /pipeline/people/ {
+        proxy_pass http://pipeline-people:5000/;
+      }
+      {{ end }}
+
       location = /pipeline {
         return 200 '<a href="http://{{ .Values.nginx.mainDomain }}/pipeline/dataservices1/">dataservices1</a>
                     <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/dataservices2/">dataservices2</a>
                     <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/committee-protocols/">committee-protocols</a>
                     <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/committee-build-meetings/">committee-build-meetings</a>
-                    <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/committee-package/">committee-package</a>';
+                    <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/committee-package/">committee-package</a>
+                    <a href="http://{{ .Values.nginx.mainDomain }}/pipeline/people/">people</a>';
         add_header Content-Type text/html;
       }
       {{ end }}

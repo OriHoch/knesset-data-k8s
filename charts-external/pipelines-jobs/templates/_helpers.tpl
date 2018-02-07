@@ -103,7 +103,7 @@ spec:
         - name: GS_BUCKET_NAME
           value: knesset-data-pipelines
         - name: OUTPUT_PATH_PREFIX
-          value: data/
+          value: {{ .outputPathPrefix | default "data/" }}
         - name: SYNC_ARGS
           value: "-a public-read"
         - name: DISABLE_TIMESTAMP
