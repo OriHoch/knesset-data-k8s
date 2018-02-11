@@ -3,33 +3,7 @@ kind: ConfigMap
 metadata:
   name: pipeline-dataservices1-envfrom
 data:
-  PIPELINES_SCRIPT: |
-    cd /pipelines &&\
-    (
-      RES=0;
-
-      ! run_pipeline ./committees/kns_committee && RES=1;
-      ! run_pipeline ./committees/kns_jointcommittee && RES=1;
-      ! run_pipeline ./committees/kns_cmtsitecode && RES=1;
-      ! run_pipeline ./committees/kns_committeesession && RES=1;
-      ! run_pipeline ./committees/kns_cmtsessionitem && RES=1;
-      ! run_pipeline ./committees/kns_documentcommitteesession && RES=1;
-
-      ! run_pipeline ./members/kns_person && RES=1;
-      ! run_pipeline ./members/kns_position && RES=1;
-      ! run_pipeline ./members/kns_persontoposition && RES=1;
-      ! run_pipeline ./members/kns_mksitecode && RES=1;
-      ! run_pipeline ./members/mk_individual && RES=1;
-
-      ! run_pipeline ./bills/kns_bill && RES=1;
-      ! run_pipeline ./bills/kns_billname && RES=1;
-      ! run_pipeline ./bills/kns_billinitiator && RES=1;
-      ! run_pipeline ./bills/kns_billhistoryinitiator && RES=1;
-      ! run_pipeline ./bills/kns_billsplit && RES=1;
-      ! run_pipeline ./bills/kns_billunion && RES=1;
-
-      exit $RES
-    )
+  PIPELINES_BATCH_NAME: dataservices1
 ---
 {{ dict "name" "pipeline-dataservices1" "Values" .Values "enabled" .Values.dataservices.enabled "enableProxy" true | include "pipeline-job" }}
 ---
@@ -38,24 +12,6 @@ kind: ConfigMap
 metadata:
   name: pipeline-dataservices2-envfrom
 data:
-  PIPELINES_SCRIPT: |
-    cd /pipelines &&\
-    (
-      RES=0;
-
-      ! run_pipeline ./votes/votes && RES=1;
-
-      ! run_pipeline ./plenum/kns_plenumsession && RES=1;
-      ! run_pipeline ./plenum/kns_plmsessionitem && RES=1;
-      ! run_pipeline ./plenum/kns_documentplenumsession && RES=1;
-
-      ! run_pipeline ./laws/kns_law && RES=1;
-      ! run_pipeline ./laws/kns_law_binding && RES=1;
-      ! run_pipeline ./laws/kns_document_law && RES=1;
-      ! run_pipeline ./laws/kns_israel_law && RES=1;
-      ! run_pipeline ./laws/kns_israel_law_name RES=1;
-
-      exit $RES
-    )
+  PIPELINES_BATCH_NAME: dataservices2
 ---
 {{ dict "name" "pipeline-dataservices2" "Values" .Values "enabled" .Values.dataservices.enabled "enableProxy" true | include "pipeline-job" }}
