@@ -7,20 +7,10 @@ metadata:
   name: pipeline-committee-build-meetings-envfrom
 data:
   PIPELINES_SCRIPT: |
-    cd /pipelines &&\
-    (
-      RES=0;
-
-      ! run_pipeline ./download && RES=1;
-      ! run_pipeline ./join-meetings && RES=1;
-      ! run_pipeline ./download_members && RES=1;
-      ! run_pipeline ./join-mks && RES=1;
-      ! run_pipeline ./create_members && RES=1;
-      ! run_pipeline ./build && RES=1;
-
-      rm -rf /pipelines/data/*
+    cd /pipelines && (source ./pipelines_script.sh) && (
+      rm -rf /pipelines/data*
       mv /pipelines/dist /pipelines/data/
-      exit $RES
     )
+    exit $?
 ---
 {{ dict "name" "pipeline-committee-build-meetings" "Values" .Values "enabled" .Values.committeesBuildMeetings.enabled "image" .Values.committeesImage | include "pipeline-job" }}
