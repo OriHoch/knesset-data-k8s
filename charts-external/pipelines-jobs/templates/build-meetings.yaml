@@ -8,9 +8,9 @@ metadata:
 data:
   PIPELINES_SCRIPT: |
     cd /pipelines && (source ./pipelines_script.sh) && (
-      rm -rf /pipelines/data*
+      rm -rf /pipelines/data/*
       mv /pipelines/dist /pipelines/data/
+      exit 0
     )
-    exit $?
 ---
 {{ dict "name" "pipeline-committee-build-meetings" "Values" .Values "enabled" .Values.committeesBuildMeetings.enabled "image" .Values.committeesImage | include "pipeline-job" }}
