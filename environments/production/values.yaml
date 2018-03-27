@@ -51,3 +51,8 @@ traefik:
   enableLoadBalancer: true
   enableCommitteesNext: true
   committeesNextDomain: committees-next.oknesset.org
+
+publicdb:
+  enabled: true
+  resources: >
+    {"requests": {"cpu": "200m", "memory": "400Mi"}, "limits": {"cpu": "300m", "memory": "1500Mi"}}
