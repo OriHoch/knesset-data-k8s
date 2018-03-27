@@ -26,6 +26,8 @@ data:
     (
       RES=0;
 
+      export DPP_DB_ENGINE=postgresql://publicdb:${PUBLICDB_POSTGRES_PASSWORD}@publicdb:5432/publicdb
+
       ! run_pipeline ./committees/gcs_list_files && RES=1;
       ! run_pipeline ./committees/join-meetings && RES=1;
       ! run_pipeline ./committees/meetings_datapackage_zip && RES=1;

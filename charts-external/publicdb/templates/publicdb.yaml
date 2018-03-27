@@ -7,8 +7,10 @@ spec:
   ports:
   - name: '5432'
     port: 5432
+  {{ if .Values.adminerEnabled }}
   - name: '8080'
     port: 8080
+  {{ end }}
   selector:
     app: publicdb
 ---
@@ -30,6 +32,10 @@ spec:
         - containerPort: 5432
         resources: {{ .Values.resources }}
         env:
+        - name: POSTGRES_USER
+          value: publicdb
+        - name: POSTGRES_DB
+          value: publicdb
         {{ if .Values.global.publicdbSecret }}
         - name: POSTGRES_PASSWORD
           valueFrom: {"secretKeyRef":{"name":"{{ .Values.global.publicdbSecret }}", "key":"POSTGRES_PASSWORD"}}
@@ -37,8 +43,10 @@ spec:
         - name: POSTGRES_PASSWORD
           value: "123456"
         {{ end }}
+      {{ if .Values.adminerEnabled }}
       - name: adminer
         image: adminer
         ports:
         - containerPort: 8080
+      {{ end }}
 {{ end }}

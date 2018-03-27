@@ -3,6 +3,7 @@ global:
   environmentName: production
   googleProjectId: hasadna-oknesset
   backupsBucketName: oknesset-k8s-backups
+  publicdbSecret: publicdb
 
 pipelines-jobs:
   enabled: true
@@ -56,3 +57,4 @@ publicdb:
   enabled: true
   resources: >
     {"requests": {"cpu": "200m", "memory": "400Mi"}, "limits": {"cpu": "300m", "memory": "1500Mi"}}
+  adminerEnabled: true
