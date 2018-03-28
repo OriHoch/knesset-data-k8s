@@ -58,3 +58,7 @@ publicdb:
   resources: >
     {"requests": {"cpu": "200m", "memory": "400Mi"}, "limits": {"cpu": "300m", "memory": "1500Mi"}}
   adminerEnabled: true
+  enableLoadBalancer: true
+  # gcloud --project=hasadna-oknesset compute addresses create oknesset-production-publicdb --region=us-central1
+  # gcloud --project=hasadna-oknesset compute addresses describe oknesset-production-publicdb --region=us-central1 | grep ^address:
+  loadBalancerIP: "35.184.9.19"

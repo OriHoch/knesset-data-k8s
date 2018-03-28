@@ -13,6 +13,12 @@ spec:
   {{ end }}
   selector:
     app: publicdb
+  {{ if .Values.enableLoadBalancer }}
+  type: LoadBalancer
+  {{ if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.loadBalancerIP | quote }}
+  {{ end }}
+  {{ end }}
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
