@@ -53,6 +53,10 @@ traefik:
   enableCommitteesNext: true
   committeesNextDomain: committees-next.oknesset.org
 
+
+committees-next:
+  enabled: true
+
 publicdb:
   enabled: true
   resources: >
