@@ -21,6 +21,9 @@ pipelines-jobs:
   # build the meetings html pages
   committeesBuildMeetings: {"enabled": true}
 
+  # publish data externally (e.g. to re:dash)
+  dataPublishers: {"enabled": true}
+
   people: {"enabled": true}
 
 metrics:

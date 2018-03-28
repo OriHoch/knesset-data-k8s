@@ -14,4 +14,4 @@ data:
       exit $RES
     )
 ---
-{{ dict "name" "pipeline-data-publishers" "Values" .Values "enabled" .Values.dataPublishers.enabled "opsEnvFrom" true "allowPipelineOps" false | include "pipeline-job" }}
+{{ dict "name" "pipeline-data-publishers" "Values" .Values "enabled" .Values.dataPublishers.enabled "opsEnvFrom" false "allowPipelineOps" false | include "pipeline-job" }}
