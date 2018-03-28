@@ -37,3 +37,15 @@ kubectl port-forward publicdb-<TAB><TAB> 8080
 
 * http://localhost:8080
   * System: PostgreSQL, Server: localhost, Username: publicdb, Password: *******, Database: publicdb
+
+
+## Create read only user for redash
+
+```
+CREATE ROLE readaccess;
+GRANT USAGE ON SCHEMA public TO readaccess;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess;
+CREATE USER redash_reader WITH PASSWORD '*******';
+GRANT readaccess TO redash_reader;
+```
