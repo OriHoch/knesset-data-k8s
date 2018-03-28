@@ -29,8 +29,6 @@ data:
       ! run_pipeline ./committees/gcs_list_files && RES=1;
       ! run_pipeline ./committees/join-meetings && RES=1;
       ! run_pipeline ./committees/meetings_datapackage_zip && RES=1;
-      ! run_pipeline ./committees/all && RES=1;
-      ! run_pipeline ./members/all && RES=1;
 
       rm -rf /pipelines/data/committees/meeting_protocols_text;
       rm -rf /pipelines/data/committees/meeting_protocols_parts;
