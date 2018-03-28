@@ -78,6 +78,8 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /k8s-ops/secret.json
         {{ end }}
+        - name: DPP_DB_ENGINE
+          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
         envFrom:
         - configMapRef:
             name: {{ .name }}-envfrom
@@ -114,8 +116,6 @@ spec:
           value: /pipelines/data
         - name: STATE_PATH
           value: /state
-        - name: DPP_DB_ENGINE
-          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
         {{ if .opsEnvFrom }}
         envFrom:
         - configMapRef:
