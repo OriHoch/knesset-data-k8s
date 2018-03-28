@@ -1,0 +1,54 @@
+{{ if .Values.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: publicdb
+spec:
+  ports:
+  - name: '5432'
+    port: 5432
+  {{ if .Values.adminerEnabled }}
+  - name: '8080'
+    port: 8080
+  {{ end }}
+  selector:
+    app: publicdb
+  {{ if .Values.enableLoadBalancer }}
+  type: LoadBalancer
+  {{ if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.loadBalancerIP | quote }}
+  {{ end }}
+  {{ end }}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: publicdb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: publicdb
+    spec:
+      containers:
+      - name: publicdb
+        image: "postgres"
+        ports:
+        - containerPort: 5432
+        resources: {{ .Values.resources }}
+        env:
+        {{ if .Values.global.publicdbSecret }}
+        - name: POSTGRES_PASSWORD
+          valueFrom: {"secretKeyRef":{"name":"{{ .Values.global.publicdbSecret }}", "key":"POSTGRES_PASSWORD"}}
+        {{ else }}
+        - name: POSTGRES_PASSWORD
+          value: "123456"
+        {{ end }}
+      {{ if .Values.adminerEnabled }}
+      - name: adminer
+        image: adminer
+        ports:
+        - containerPort: 8080
+      {{ end }}
+{{ end }}

@@ -6,10 +6,15 @@ filename = sys.argv[1]
 with open(filename) as f:
     values = yaml.load(f)
 
+
 def get_from_dict(values, keys):
     if len(keys) > 1:
         return get_from_dict(values[keys[0]], keys[1:])
     else:
-        return values[keys[0]]
+        return values.get(keys[0])
 
-print(json.dumps(get_from_dict(values, sys.argv[2:]), separators=(',', ':')))
+
+value = get_from_dict(values, sys.argv[2:])
+if value:
+    json_dump = json.dumps(value, separators=(',', ':'))
+    print(json_dump)

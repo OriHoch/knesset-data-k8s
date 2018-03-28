@@ -114,6 +114,8 @@ spec:
           value: /pipelines/data
         - name: STATE_PATH
           value: /state
+        - name: DPP_DB_ENGINE
+          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
         {{ if .opsEnvFrom }}
         envFrom:
         - configMapRef:
