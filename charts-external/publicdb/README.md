@@ -6,7 +6,9 @@ DB contains all the public data and is accessed remotely using read-only user by
 ## Secrets
 
 ```
- kubectl create secret generic publicdb --from-literal=POSTGRES_PASSWORD=******
+ POSTGRES_PASSWORD=******
+kubectl create secret generic publicdb --from-literal=POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+                                        --from-literal=DPP_DB_ENGINE=postgresql://postgres:${POSTGRES_PASSWORD}@publicdb:5432/postgres
 ```
 
 

@@ -114,8 +114,8 @@ spec:
           value: /pipelines/data
         - name: STATE_PATH
           value: /state
-        - name: PUBLICDB_POSTGRES_PASSWORD
-          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"POSTGRES_PASSWORD"}}
+        - name: DPP_DB_ENGINE
+          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
         {{ if .opsEnvFrom }}
         envFrom:
         - configMapRef:

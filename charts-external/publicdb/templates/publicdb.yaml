@@ -32,10 +32,6 @@ spec:
         - containerPort: 5432
         resources: {{ .Values.resources }}
         env:
-        - name: POSTGRES_USER
-          value: publicdb
-        - name: POSTGRES_DB
-          value: publicdb
         {{ if .Values.global.publicdbSecret }}
         - name: POSTGRES_PASSWORD
           valueFrom: {"secretKeyRef":{"name":"{{ .Values.global.publicdbSecret }}", "key":"POSTGRES_PASSWORD"}}
