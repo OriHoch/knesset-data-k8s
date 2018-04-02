@@ -3,15 +3,6 @@ kind: ConfigMap
 metadata:
   name: pipeline-data-publishers-envfrom
 data:
-  PIPELINES_SCRIPT: |
-    cd /pipelines &&\
-    (
-      RES=0;
-
-      ! run_pipeline ./committees/all && RES=1;
-      ! run_pipeline ./members/all && RES=1;
-
-      exit $RES
-    )
+  PIPELINES_BATCH_NAME: datapublishers
 ---
-{{ dict "name" "pipeline-data-publishers" "Values" .Values "enabled" .Values.dataPublishers.enabled "opsEnvFrom" false "allowPipelineOps" false | include "pipeline-job" }}
+{{ dict "name" "pipeline-data-publishers" "Values" .Values "enabled" .Values.dataPublishers.enabled | include "pipeline-job" }}
