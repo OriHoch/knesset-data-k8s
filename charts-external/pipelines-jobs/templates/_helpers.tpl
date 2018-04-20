@@ -30,24 +30,28 @@ spec:
       {{ if .enableProxy }}
       - name: ssh-socks-proxy
         image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
-        resources: {"requests": {"cpu": "1m", "memory": "3Mi"}}
+        resources: {"requests": {"cpu": "10m", "memory": "10Mi"}, "limits": {"cpu": "20m", "memory": "100Mi"}}
+        command:
+        - bash
+        - "-c"
+        - |
+          echo $SSH_B64_KEY | base64 -d > secret &&\
+          chmod 400 secret &&\
+          ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+              -p 22 -D 0.0.0.0:8123 -C -N -i secret \
+              ubuntu@db1.oknesset.org
+        livenessProbe:
+          exec:
+            command:
+            - curl -fsS --socks5-hostname "localhost:8123" http://knesset.gov.il/Odata/ParliamentInfo.svc//KNS_KnessetDates >/dev/null
+          initialDelaySeconds: 5
+          periodSeconds: 5
         env:
-        - name: SSH_HOST
-          value: ubuntu@db1.oknesset.org
-        - name: SSH_PORT
-          value: "22"
-        - name: SOCKS_PORT
-          value: "8123"
         - name: SSH_B64_KEY
           valueFrom:
             secretKeyRef:
               name: "ssh-socks-proxy"
               key: "SSH_B64_KEY"
-        - name: SSH_B64_PUBKEY
-          valueFrom:
-            secretKeyRef:
-              name: "ssh-socks-proxy"
-              key: "SSH_B64_PUBKEY"
       {{ end }}
       - name: pipelines
         image: {{ .image | default .Values.image | quote }}
