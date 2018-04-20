@@ -43,6 +43,8 @@ spec:
         livenessProbe:
           exec:
             command:
+            - bash
+            - "-c"
             - curl -fsS --socks5-hostname "localhost:8123" http://knesset.gov.il/Odata/ParliamentInfo.svc//KNS_KnessetDates >/dev/null
           initialDelaySeconds: 5
           periodSeconds: 5
