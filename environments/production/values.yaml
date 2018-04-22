@@ -30,6 +30,7 @@ pipelines-jobs:
   protocolsEnabled: true
   pipelinesEnabled: true
   peopleEnabled: true
+  committeesEnabled: true
 
 metrics:
   enabled: false

@@ -43,7 +43,7 @@ spec:
               key: "SSH_B64_KEY"
       - name: pipelines
         image: {{ .Values.image | quote }}
-        resources: {"requests": {"cpu": "1000m", "memory": "2Gi"}, "limits": {"cpu": "1500m", "memory": "3Gi"}}
+        resources: {"requests": {"cpu": "600m", "memory": "2Gi"}, "limits": {"cpu": "1200m", "memory": "3Gi"}}
         command:
         - bash
         - "-c"
@@ -66,14 +66,14 @@ spec:
           value: socks5h://localhost:8123
         - name: DPP_DB_ENGINE
           valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
-        - name: DATASERVICE_DUMP_TO_STORAGE
+        - name: DUMP_TO_STORAGE
           value: "1"
-        - name: DATASERVICE_DUMP_TO_SQL
+        - name: DUMP_TO_SQL
           value: "1"
         - name: RUN_PIPELINE_CMD
           value: dpp run
         - name: DPP_CONCURRENCY
-          value: "6"
+          value: "5"
         - name: DPP_REDIS_HOST
           value: pipelines-server
         - name: GOOGLE_APPLICATION_CREDENTIALS
