@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pipeline-datapublishers-envfrom
-data:
-  PIPELINES_BATCH_NAME: datapublishers
----
-{{ dict "name" "pipeline-datapublishers" "Values" .Values "enabled" .Values.datapublishers.enabled | include "pipeline-job" }}

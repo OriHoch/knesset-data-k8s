@@ -1,6 +1,6 @@
 pipelines-jobs:
   committeesImage: gcr.io/hasadna-oknesset/knesset-data-committees-cd:0516598a4954557906ebebf6044fbb25a705016c
-  image: gcr.io/hasadna-oknesset/knesset-data-pipelines-cd:3e6e2206ec7a9f705c3f27ea33e4829927e86912
-  peopleImage: gcr.io/hasadna-oknesset/knesset-data-people-cd:0d04dfd02f814cb22c6920a9b891ee7537ef13c9
+  image: orihoch/knesset-data-pipelines:additional-tables-runner-improvements-2
+  peopleImage: orihoch/knesset-data-people:dump-to-storage-4
 revolving-doors:
   pipelinesImage: gcr.io/hasadna-oknesset/revolving-doors-cd:40e82c595397ac96cd3da4d63a0ffee272141e9a

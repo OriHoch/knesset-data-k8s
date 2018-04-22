@@ -1,0 +1,47 @@
+{{ if and .Values.enabled .Values.serverEnabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipelines-server
+spec:
+  selector:
+    app: pipelines-server
+  ports:
+  - name: "5000"
+    port: 5000
+  - name: "6379"
+    port: 6379
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pipelines-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pipelines-server
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: server
+        image: {{ .Values.image | quote }}
+        resources: {"requests": {"cpu": "100m", "memory": "200Mi"}, "limits": {"cpu": "200m", "memory": "500Mi"}}
+        command:
+        - bash
+        - "-c"
+        - |
+          while ! python -c 'import redis;redis.StrictRedis(host="localhost", db=5).ping()'; do sleep 1; done &&\
+          dpp serve
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DPP_REDIS_HOST
+          value: localhost
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+        resources: {"requests": {"cpu": "20m", "memory": "100Mi"}, "limits": {"cpu": "60m", "memory": "200Mi"}}
+{{ end }}

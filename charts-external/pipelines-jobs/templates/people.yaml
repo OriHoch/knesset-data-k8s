@@ -1,7 +1,56 @@
-apiVersion: v1
-kind: ConfigMap
+{{ if and .Values.enabled .Values.peopleEnabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
-  name: pipeline-people-envfrom
-data: {}
----
-{{ dict "name" "pipeline-people" "Values" .Values "enabled" .Values.people.enabled "image" .Values.peopleImage "outputPathPrefix" "data/people/" | include "pipeline-job" }}
+  name: pipelines-people
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: pipelines-people
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: pipelines
+        image: {{ .Values.peopleImage | quote }}
+        resources: {"requests": {"cpu": "300m", "memory": "500Mi"}, "limits": {"cpu": "600m", "memory": "1Gi"}}
+        command:
+        - bash
+        - "-c"
+        - |
+          while ! python -c 'import redis;redis.StrictRedis(host="pipelines-server", db=5).ping()'; do sleep 1; done
+          echo "
+            cd /pipelines
+            ./pipelines_script.sh
+          " > /cronscript
+          bash /cronscript
+          mkdir -p /crontabs &&\
+          echo '# min hour day month weekday command' > /crontabs/root &&\
+          echo '* 4 * * * bash /cronscript' >> /crontabs/root &&\
+          cat /crontabs/root &&\
+          crond -fc /crontabs -d 8
+        env:
+        - name: DPP_DB_ENGINE
+          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
+        - name: DUMP_TO_STORAGE
+          value: "1"
+        - name: DUMP_TO_SQL
+          value: "1"
+        - name: DPP_CONCURRENCY
+          value: "3"
+        - name: DPP_REDIS_HOST
+          value: pipelines-server
+        volumeMounts:
+        - name: k8s-ops
+          mountPath: /secret_service_key
+          subPath: secret.json
+          readOnly: true
+      volumes:
+      - name: k8s-ops
+        secret:
+          secretName: ops
+{{ end }}

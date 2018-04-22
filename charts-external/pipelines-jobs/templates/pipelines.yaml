@@ -1,0 +1,90 @@
+{{ if and .Values.enabled .Values.pipelinesEnabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pipelines
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: pipelines
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: ssh-socks-proxy
+        image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
+        resources: {"requests": {"cpu": "10m", "memory": "10Mi"}, "limits": {"cpu": "20m", "memory": "100Mi"}}
+        command:
+        - bash
+        - "-c"
+        - |
+          echo $SSH_B64_KEY | base64 -d > secret &&\
+          chmod 400 secret &&\
+          ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+              -p 22 -D 0.0.0.0:8123 -C -N -i secret \
+              ubuntu@db1.oknesset.org
+        livenessProbe:
+          exec:
+            command:
+            - bash
+            - "-c"
+            - curl -fsS --socks5-hostname "localhost:8123" http://knesset.gov.il/Odata/ParliamentInfo.svc//KNS_KnessetDates >/dev/null
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        env:
+        - name: SSH_B64_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "ssh-socks-proxy"
+              key: "SSH_B64_KEY"
+      - name: pipelines
+        image: {{ .Values.image | quote }}
+        resources: {"requests": {"cpu": "1000m", "memory": "2Gi"}, "limits": {"cpu": "1500m", "memory": "3Gi"}}
+        command:
+        - bash
+        - "-c"
+        - |
+          while ! python -c 'import redis;redis.StrictRedis(host="pipelines-server", db=5).ping()'; do sleep 1; done
+          echo "
+            cd /pipelines
+            ./pipelines_script.sh dataservices
+            ./pipelines_script.sh all
+            export CHECK_REMOTE_STORAGE=https://storage.googleapis.com/knesset-data-pipelines/data/committees/download_document_committee_session/
+            ./pipelines_script.sh protocols
+          " > /cronscript
+          bash /cronscript
+          mkdir -p /crontabs &&\
+          echo '# min hour day month weekday command' > /crontabs/root &&\
+          echo '* 2 * * * bash /cronscript' >> /crontabs/root &&\
+          crond -fc /crontabs -d 8
+        env:
+        - name: DATASERVICE_HTTP_PROXY
+          value: socks5h://localhost:8123
+        - name: DPP_DB_ENGINE
+          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
+        - name: DATASERVICE_DUMP_TO_STORAGE
+          value: "1"
+        - name: DATASERVICE_DUMP_TO_SQL
+          value: "1"
+        - name: RUN_PIPELINE_CMD
+          value: dpp run
+        - name: DPP_CONCURRENCY
+          value: "6"
+        - name: DPP_REDIS_HOST
+          value: pipelines-server
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /secret_service_key
+        volumeMounts:
+        - name: k8s-ops
+          mountPath: /secret_service_key
+          subPath: secret.json
+          readOnly: true
+      volumes:
+      - name: k8s-ops
+        secret:
+          secretName: ops
+{{ end }}

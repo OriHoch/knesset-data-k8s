@@ -7,32 +7,37 @@ global:
 
 pipelines-jobs:
   enabled: true
-  image: orihoch/knesset-data-pipelines:sk8s-pipelines-v0.0.3-g-3
+  image: orihoch/knesset-data-pipelines:additional-tables
   committeesImage: orihoch/knesset-data-committees:v0.0.1-d
   peopleImage: orihoch/knesset-data-people
 
   # main dataservice and related downloads
-  dataservices: {"enabled": true}
+  dataservices: {"enabled": false}
 
   # download and parse committee protocols
-  committeesProtocols: {"enabled": true}
-  committeesPackage: {"enabled": true}
+  committeesProtocols: {"enabled": false}
+  committeesPackage: {"enabled": false}
 
   # build the meetings html pages
-  committeesBuildMeetings: {"enabled": true}
+  committeesBuildMeetings: {"enabled": false}
 
   # publish data externally (e.g. to re:dash)
-  datapublishers: {"enabled": true}
+  datapublishers: {"enabled": false}
 
-  people: {"enabled": true}
+  people: {"enabled": false}
+
+  serverEnabled: true
+  protocolsEnabled: true
+  pipelinesEnabled: true
+  peopleEnabled: true
 
 metrics:
-  enabled: true
+  enabled: false
   GF_SERVER_DOMAIN: production.oknesset.org
 
 nginx:
   enabled: true
-  enablePipelineDashboards: true
+  enablePipelineDashboard: true
   mainDomain: production.oknesset.org
   htpasswdSecretName: nginx-htpasswd
 
