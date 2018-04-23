@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: pipelines
+        app: pipelines-committees
     spec:
       terminationGracePeriodSeconds: 0
       containers:
@@ -22,15 +22,15 @@ spec:
         - bash
         - "-c"
         - |
-          while ! python -c 'import redis;redis.StrictRedis(host="pipelines-server", db=5).ping()'; do sleep 1; done
           echo "
-            cd /pipelines
-            ./pipelines_script.sh
+              cd /pipelines
+              ${CRON_SCRIPT:-./pipelines_script.sh}
           " > /cronscript
           bash /cronscript
           mkdir -p /crontabs &&\
-          echo '# min hour day month weekday command' > /crontabs/root &&\
-          echo '* 4 * * * bash /cronscript' >> /crontabs/root &&\
+          echo "# min hour day month weekday command" > /crontabs/root &&\
+          if [ "${CRON_TIME}" != "" ]; then echo "${CRON_TIME} bash /cronscript" >> /crontabs/root; fi &&\
+          cat /crontabs/root &&\
           crond -fc /crontabs -d 8
         env:
         - name: DPP_DB_ENGINE
@@ -43,6 +43,10 @@ spec:
           value: "2"
         - name: DPP_REDIS_HOST
           value: pipelines-server
+        - name: CRON_TIME
+          value: {{ .Values.committeesCronTime | default "" | quote }}
+        - name: DPP_INFLUXDB_URL
+          value: http://metrics-influxdb:8086
         volumeMounts:
         - name: k8s-ops
           mountPath: /secret_service_key

@@ -10,30 +10,13 @@ pipelines-jobs:
   image: orihoch/knesset-data-pipelines:additional-tables
   committeesImage: orihoch/knesset-data-committees:v0.0.1-d
   peopleImage: orihoch/knesset-data-people
-
-  # main dataservice and related downloads
-  dataservices: {"enabled": false}
-
-  # download and parse committee protocols
-  committeesProtocols: {"enabled": false}
-  committeesPackage: {"enabled": false}
-
-  # build the meetings html pages
-  committeesBuildMeetings: {"enabled": false}
-
-  # publish data externally (e.g. to re:dash)
-  datapublishers: {"enabled": false}
-
-  people: {"enabled": false}
-
   serverEnabled: true
-  protocolsEnabled: true
   pipelinesEnabled: true
   peopleEnabled: true
   committeesEnabled: true
 
 metrics:
-  enabled: false
+  enabled: true
   GF_SERVER_DOMAIN: production.oknesset.org
 
 nginx:

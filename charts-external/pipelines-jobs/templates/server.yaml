@@ -33,6 +33,7 @@ spec:
         - "-c"
         - |
           while ! python -c 'import redis;redis.StrictRedis(host="localhost", db=5).ping()'; do sleep 1; done &&\
+          dpp init &&\
           dpp serve
         ports:
         - containerPort: 5000
