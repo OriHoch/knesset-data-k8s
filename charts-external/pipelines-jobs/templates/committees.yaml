@@ -17,7 +17,7 @@ spec:
       containers:
       - name: pipelines
         image: {{ .Values.committeesImage | quote }}
-        resources: {"requests": {"cpu": "200m", "memory": "1000Mi"}, "limits": {"cpu": "400m", "memory": "1500Mi"}}
+        resources: {"requests": {"cpu": "400m", "memory": "1000Mi"}, "limits": {"memory": "1500Mi"}}
         command:
         - bash
         - "-c"
@@ -33,20 +33,18 @@ spec:
           cat /crontabs/root &&\
           crond -fc /crontabs -d 8
         env:
-        - name: DPP_DB_ENGINE
-          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
-        - name: DUMP_TO_STORAGE
-          value: "1"
-        - name: DUMP_TO_SQL
-          value: "1"
         - name: DPP_CONCURRENCY
           value: "2"
-        - name: DPP_REDIS_HOST
-          value: pipelines-server
-        - name: CRON_TIME
-          value: {{ .Values.committeesCronTime | default "" | quote }}
-        - name: DPP_INFLUXDB_URL
-          value: http://metrics-influxdb:8086
+#        - name: DPP_DB_ENGINE
+#          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
+#        - name: DUMP_TO_STORAGE
+#          value: "1"
+#        - name: DUMP_TO_SQL
+#          value: "1"
+#        - name: DPP_REDIS_HOST
+#          value: pipelines-server
+#        - name: CRON_TIME
+#          value: {{ .Values.committeesCronTime | default "" | quote }}
         volumeMounts:
         - name: k8s-ops
           mountPath: /secret_service_key

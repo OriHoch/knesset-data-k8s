@@ -7,10 +7,7 @@ global:
 
 pipelines-jobs:
   enabled: true
-  image: orihoch/knesset-data-pipelines:additional-tables
-  committeesImage: orihoch/knesset-data-committees:v0.0.1-d
-  peopleImage: orihoch/knesset-data-people
-  serverEnabled: true
+#  serverEnabled: true
   pipelinesEnabled: true
   peopleEnabled: true
   committeesEnabled: true

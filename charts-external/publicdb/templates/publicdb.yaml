@@ -7,10 +7,6 @@ spec:
   ports:
   - name: '5432'
     port: 5432
-  {{ if .Values.adminerEnabled }}
-  - name: '8080'
-    port: 8080
-  {{ end }}
   selector:
     app: publicdb
   {{ if .Values.enableLoadBalancer }}
@@ -20,6 +16,19 @@ spec:
   {{ end }}
   {{ end }}
 ---
+{{ if .Values.adminerEnabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: publicdb-adminer
+spec:
+  ports:
+  - name: '8080'
+    port: 8080
+  selector:
+    app: publicdb
+---
+{{ end }}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
