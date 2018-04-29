@@ -13,12 +13,12 @@ pipelines-jobs:
   committeesEnabled: true
 
 metrics:
-  enabled: true
+  enabled: false
   GF_SERVER_DOMAIN: production.oknesset.org
 
 nginx:
   enabled: true
-  enablePipelineDashboard: true
+  enablePipelineDashboard: false
   mainDomain: production.oknesset.org
   htpasswdSecretName: nginx-htpasswd
 
@@ -44,7 +44,7 @@ traefik:
 
 
 committees-next:
-  enabled: true
+  enabled: false
 
 publicdb:
   enabled: true

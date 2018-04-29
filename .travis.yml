@@ -22,7 +22,6 @@ script:
       if ./run_docker_ops.sh "${K8S_ENVIRONMENT_NAME}" "
         cd /ops &&\
         ./helm_upgrade.sh &&\
-        ./helm_upgrade_external_chart.sh metrics &&\
         ./helm_upgrade_external_chart.sh pipelines-jobs
       " "orihoch/sk8s-ops" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}"; then
         true
