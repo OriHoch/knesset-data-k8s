@@ -8,9 +8,14 @@ global:
 pipelines-jobs:
   enabled: true
 #  serverEnabled: true
-  pipelinesEnabled: true
-  peopleEnabled: true
+  pipelinesEnabled: false
+  peopleEnabled: false
   committeesEnabled: true
+  committeesResources: >
+    {"requests": {"cpu": "400m", "memory": "1000Mi"}, "limits": {"memory": "1500Mi"}}
+  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a committees-pipelines
+  committeesPersistentDiskName: committees-pipelines
+  committees_DISABLE_MEMBER_PERCENTS: "yes"
 
 metrics:
   enabled: false

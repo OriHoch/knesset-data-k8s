@@ -1,11 +1,10 @@
 {{ if and .Values.enabled .Values.committeesEnabled }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: pipelines-committees
 spec:
   replicas: 1
-  revisionHistoryLimit: 2
   strategy:
     type: Recreate
   template:
@@ -13,45 +12,39 @@ spec:
       labels:
         app: pipelines-committees
     spec:
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 5
       containers:
       - name: pipelines
         image: {{ .Values.committeesImage | quote }}
-        resources: {"requests": {"cpu": "400m", "memory": "1000Mi"}, "limits": {"memory": "1500Mi"}}
-        command:
-        - bash
-        - "-c"
-        - |
-          echo "
-              cd /pipelines
-              ${CRON_SCRIPT:-./pipelines_script.sh}
-          " > /cronscript
-          bash /cronscript
-          mkdir -p /crontabs &&\
-          echo "# min hour day month weekday command" > /crontabs/root &&\
-          if [ "${CRON_TIME}" != "" ]; then echo "${CRON_TIME} bash /cronscript" >> /crontabs/root; fi &&\
-          cat /crontabs/root &&\
-          crond -fc /crontabs -d 8
         env:
-        - name: DPP_CONCURRENCY
-          value: "2"
-#        - name: DPP_DB_ENGINE
-#          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
-#        - name: DUMP_TO_STORAGE
-#          value: "1"
-#        - name: DUMP_TO_SQL
-#          value: "1"
-#        - name: DPP_REDIS_HOST
-#          value: pipelines-server
-#        - name: CRON_TIME
-#          value: {{ .Values.committeesCronTime | default "" | quote }}
+        - name: DISABLE_MEMBER_PERCENTS
+          value: {{ .Values.committees_DISABLE_MEMBER_PERCENTS | default "" | quote }}
+        command:
+        - sh
+        - "/dpp/docker/run.sh"
+        - server
+        ports:
+        - containerPort: 5000
+        resources: {{ .Values.committeesResources }}
         volumeMounts:
         - name: k8s-ops
           mountPath: /secret_service_key
           subPath: secret.json
           readOnly: true
+        - mountPath: /pipelines/data
+          name: data
+          subPath: data
+        - mountPath: /pipelines/dist
+          name: data
+          subPath: dist
+        - mountPath: /var/redis
+          name: data
+          subPath: redis
       volumes:
       - name: k8s-ops
         secret:
           secretName: ops
+      - name: data
+        gcePersistentDisk:
+          pdName: {{ .Values.committeesPersistentDiskName | quote }}
 {{ end }}
