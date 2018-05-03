@@ -45,53 +45,43 @@ spec:
         image: {{ .Values.image | quote }}
         resources: {"requests": {"cpu": "600m", "memory": "2Gi"}, "limits": {"cpu": "1200m", "memory": "3Gi"}}
         command:
-        - bash
+        - sh
         - "-c"
-        - |
-          echo "
-              cd /pipelines
-              ${CRON_SCRIPT:-./pipelines_script.sh}
-          " > /cronscript
-          bash /cronscript
-          mkdir -p /crontabs &&\
-          echo "# min hour day month weekday command" > /crontabs/root &&\
-          if [ "${CRON_TIME}" != "" ]; then echo "${CRON_TIME} bash /cronscript" >> /crontabs/root; fi &&\
-          cat /crontabs/root &&\
-          crond -fc /crontabs -d 8
+        - while true; do sleep 86400; done
+#        - "/dpp/docker/run.sh"
+#        - server
+        ports:
+        - containerPort: 5000
         env:
         - name: DATASERVICE_HTTP_PROXY
-          value: socks5h://localhost:8123
+          value: socks5h://127.0.0.1:8123
         - name: DPP_DB_ENGINE
           valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
         - name: DUMP_TO_STORAGE
           value: "1"
         - name: DUMP_TO_SQL
           value: "1"
-        - name: RUN_PIPELINE_CMD
-          value: dpp run
-        - name: DPP_CONCURRENCY
-          value: "4"
-#        - name: DPP_REDIS_HOST
-#          value: pipelines-server
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /secret_service_key
-#        - name: CRON_TIME
-#          value: {{ .Values.pipelinesCronTime | default "" | quote }}
-        - name: CRON_SCRIPT
-          value: |
-            ./pipelines_script.sh dataservices
-            ./pipelines_script.sh all
-            export CHECK_REMOTE_STORAGE=https://storage.googleapis.com/knesset-data-pipelines/data/committees/download_document_committee_session/
-            ./pipelines_script.sh protocols
-#        - name: DPP_INFLUXDB_URL
-#          value: http://metrics-influxdb:8086
         volumeMounts:
         - name: k8s-ops
           mountPath: /secret_service_key
           subPath: secret.json
           readOnly: true
+        - mountPath: /pipelines/data
+          name: data
+          subPath: data
+        - mountPath: /pipelines/dist
+          name: data
+          subPath: dist
+        - mountPath: /var/redis
+          name: data
+          subPath: redis
       volumes:
       - name: k8s-ops
         secret:
           secretName: ops
+      - name: data
+        gcePersistentDisk:
+          pdName: {{ .Values.persistentDiskName | quote }}
 {{ end }}

@@ -48,7 +48,7 @@ data:
       {{ if .Values.traefik.enableCommitteesNext }}
       [backends.committeesnext]
         [backends.committeesnext.servers.server1]
-          url = "http://nginx:81"
+          url = "http://committees-pipelines:8000"
       {{ end }}
       {{ end }}
 
@@ -63,8 +63,7 @@ data:
         backend="committeesnext"
         passHostHeader = true
           [frontends.committeesnext.routes.route1]
-            rule = "Host: {{ .Values.traefik.committeesNextDomain }};"
+            rule = "Host: {{ .Values.traefik.committeesNextDomain }},oknesset.org,www.oknesset.org;"
       {{ end }}
       {{ end }}
-
 {{ end }}

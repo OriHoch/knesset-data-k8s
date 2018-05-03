@@ -30,6 +30,8 @@ data:
       listen 81;
       server_name _;
 
+      error_page 404 =200 /index.html;
+
       location / {
         proxy_pass https://storage.googleapis.com/knesset-data-pipelines/data/dist/;
       }

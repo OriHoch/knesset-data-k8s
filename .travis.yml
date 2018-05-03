@@ -7,7 +7,7 @@ services:
 - docker
 script:
 - |
-  if [ "${DEPLOY_ENVIRONMENT}" != "" ] && [ "${TRAVIS_PULL_REQUEST}" == "false" ] &&\
+  if false && [ "${DEPLOY_ENVIRONMENT}" != "" ] && [ "${TRAVIS_PULL_REQUEST}" == "false" ] &&\
      ( \
       ([ "${TRAVIS_BRANCH}" == "${DEPLOY_BRANCH}" ] && ! echo "${TRAVIS_COMMIT_MESSAGE}" | grep -- --no-deploy) ||\
       ([ "${DEPLOY_TAGS}" == "true" ] && [ "${TRAVIS_TAG}" != "" ]) \

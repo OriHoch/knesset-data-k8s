@@ -5,17 +5,22 @@ global:
   backupsBucketName: oknesset-k8s-backups
   publicdbSecret: publicdb
 
+committees:
+  enabled: true
+  DISABLE_MEMBER_PERCENTS: "yes"
+  resources: >
+    {"requests": {"cpu": "400m", "memory": "1000Mi"}, "limits": {"memory": "1500Mi"}}
+  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a committees-pipelines
+  pdName: committees-pipelines
+  committeesDomain: oknesset.org
+
 pipelines-jobs:
   enabled: true
 #  serverEnabled: true
-  pipelinesEnabled: false
+  pipelinesEnabled: true
+  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a pipelines
+  persistentDiskName: pipelines
   peopleEnabled: false
-  committeesEnabled: true
-  committeesResources: >
-    {"requests": {"cpu": "400m", "memory": "1000Mi"}, "limits": {"memory": "1500Mi"}}
-  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a committees-pipelines
-  committeesPersistentDiskName: committees-pipelines
-  committees_DISABLE_MEMBER_PERCENTS: "yes"
 
 metrics:
   enabled: false
@@ -34,6 +39,10 @@ traefik:
       main = "production.oknesset.org"
     [[acme.domains]]
       main = "committees-next.oknesset.org"
+    [[acme.domains]]
+      main = "oknesset.org"
+    [[acme.domains]]
+      main = "www.oknesset.org"
   acmeEmail: ori@uumpa.com
   dnsProvider: route53
   # AWS IAM user name = oknesset-route53-api
