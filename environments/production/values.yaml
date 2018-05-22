@@ -14,13 +14,17 @@ committees:
   pdName: committees-pipelines
   committeesDomain: oknesset.org
 
-pipelines-jobs:
+pipelines:
   enabled: true
-#  serverEnabled: true
-  pipelinesEnabled: true
   # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a pipelines
   persistentDiskName: pipelines
-  peopleEnabled: false
+  image: gcr.io/hasadna-oknesset/knesset-data-pipelines-cd:9d124ebed0ad2f938994e8f4763bd07938e4cc72
+
+people:
+  enabled: true
+  # gcloud --project=hasadna-oknesset compute disks create --size=50GB --zone=us-central1-a people
+  persistentDiskName: people
+  image: gcr.io/hasadna-oknesset/knesset-data-people-cd:9388c27b09f99599019dd4ece9ff9d71f9b415fa
 
 metrics:
   enabled: false
@@ -57,9 +61,6 @@ traefik:
   committeesNextDomain: committees-next.oknesset.org
 
 
-committees-next:
-  enabled: false
-
 publicdb:
   enabled: true
   resources: >
@@ -69,3 +70,7 @@ publicdb:
   # gcloud --project=hasadna-oknesset compute addresses create oknesset-production-publicdb --region=us-central1
   # gcloud --project=hasadna-oknesset compute addresses describe oknesset-production-publicdb --region=us-central1 | grep ^address:
   loadBalancerIP: "35.184.9.19"
+  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a publicdb
+  persistentDiskName: publicdb
+  # kubectl create secret generic redash-reader --from-literal=REDASH_READER_PASSWORD=***
+  redashReaderSecret: redash-reader

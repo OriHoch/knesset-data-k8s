@@ -35,11 +35,13 @@ metadata:
   name: publicdb
 spec:
   replicas: 1
+  strategy: {type: "Recreate"}
   template:
     metadata:
       labels:
         app: publicdb
     spec:
+      terminationGracePeriodSeconds: 5
       containers:
       - name: publicdb
         image: "postgres"
@@ -54,10 +56,42 @@ spec:
         - name: POSTGRES_PASSWORD
           value: "123456"
         {{ end }}
+        {{ if .Values.redashReaderSecret }}
+        - name: REDASH_READER_PASSWORD
+          valueFrom: {"secretKeyRef":{"name":"{{ .Values.redashReaderSecret }}", "key":"REDASH_READER_PASSWORD"}}
+        {{ end }}
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+          # postgres doesn't let you use the root of a disk (it complaints about having lost+found directory)
+          subPath: dbdata
+        {{ if .Values.redashReaderSecret }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - bash
+              - "-c"
+              - |
+                while ! su -c 'psql -c "select 1;"' postgres; do
+                  sleep 1
+                  echo .
+                done
+                su -c 'psql -c "SELECT 1 FROM pg_roles WHERE rolname='USR_NAME';"' postgres ||\
+                su -c 'psql -c "CREATE ROLE readaccess; GRANT USAGE ON SCHEMA public TO readaccess;
+                GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
+                ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess;
+                CREATE USER redash_reader WITH PASSWORD '"'${REDASH_READER_PASSWORD}'"';
+                GRANT readaccess TO redash_reader;"' postgres
+        {{ end }}
       {{ if .Values.adminerEnabled }}
       - name: adminer
         image: adminer
         ports:
         - containerPort: 8080
       {{ end }}
+      volumes:
+      - name: data
+        gcePersistentDisk:
+          pdName: {{ .Values.persistentDiskName | quote }}
 {{ end }}

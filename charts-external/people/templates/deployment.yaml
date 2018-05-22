@@ -1,0 +1,70 @@
+{{ if .Values.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: people
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: people
+      annotations:
+        checksum/nginx-config: {{ include (print $.Template.BasePath "/nginx-configmap.yaml") . | sha256sum }}
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: pipelines
+        image: {{ .Values.image | quote }}
+        resources: {"requests": {"cpu": "600m", "memory": "2Gi"}, "limits": {"cpu": "1200m", "memory": "3Gi"}}
+        command:
+        - "/dpp/docker/run.sh"
+        - server
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DPP_DB_ENGINE
+          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
+        - name: DUMP_TO_STORAGE
+          value: "1"
+        - name: DUMP_TO_SQL
+          value: "1"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /secret_service_key
+        volumeMounts:
+        - name: k8s-ops
+          mountPath: /secret_service_key
+          subPath: secret.json
+          readOnly: true
+        - mountPath: /pipelines/data
+          name: data
+          subPath: data
+        - mountPath: /var/redis
+          name: data
+          subPath: redis
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 8000
+        resources: {"requests": {"cpu": "50m", "memory": "150Mi"}, "limits": {"memory": "300Mi"}}
+        volumeMounts:
+        - name: nginx-conf
+          mountPath: /etc/nginx/conf.d
+          readOnly: true
+        - mountPath: /pipelines/data
+          name: data
+          subPath: data
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: pipelines-nginx
+      - name: k8s-ops
+        secret:
+          secretName: ops
+      - name: data
+        gcePersistentDisk:
+          pdName: {{ .Values.persistentDiskName | quote }}
+{{ end }}
