@@ -41,6 +41,12 @@ data:
         proxy_pass http://people:5000/;
       }
       {{ end }}
+
+      {{ if .Values.committees.enabled }}
+      location /committees/pipelines/ {
+        proxy_pass http://committees-pipelines:5000/;
+      }
+      {{ end }}
     }
 
   healthcheck.inc: |
