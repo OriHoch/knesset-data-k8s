@@ -14,7 +14,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/nginx-configmap.yaml") . | sha256sum }}
     spec:
-      terminationGracePeriodSeconds: 5
+      terminationGracePeriodSeconds: 0
       containers:
       - name: pipelines
         image: {{ .Values.image | default "gcr.io/hasadna-oknesset/knesset-data-committees-cd:7be40c33a1cadef7e4b7dc4f36bde94a4b7453f5" | quote }}
@@ -46,6 +46,7 @@ spec:
         image: nginx:alpine
         ports:
         - containerPort: 8000
+        - containerPort: 8080
         resources: {"requests": {"cpu": "50m", "memory": "150Mi"}, "limits": {"memory": "300Mi"}}
         volumeMounts:
         - name: nginx-conf
@@ -54,6 +55,9 @@ spec:
         - mountPath: /pipelines/dist
           name: data
           subPath: dist
+        - mountPath: /pipelines/data
+          name: data
+          subPath: data
       volumes:
       - name: k8s-ops
         secret:

@@ -7,10 +7,6 @@ spec:
   ports:
   - name: "80"
     port: 80
-  {{ if .Values.traefik.enableCommitteesNext }}
-  - name: "81"
-    port: 81
-  {{ end }}
   selector:
     app: nginx
 ---
@@ -33,9 +29,6 @@ spec:
         image: nginx:alpine
         ports:
         - containerPort: 80
-        {{ if .Values.traefik.enableCommitteesNext }}
-        - containerPort: 81
-        {{ end }}
         resources: {"requests": {"cpu": "20m", "memory": "20Mi"}}
         volumeMounts:
         - name: nginx-conf

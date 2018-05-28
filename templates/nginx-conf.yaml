@@ -11,12 +11,6 @@ data:
 
       include /etc/nginx/conf.d/healthcheck.inc;
 
-      {{ if .Values.nginx.enablePipelineDashboard }}
-      location /pipelines/ {
-        proxy_pass http://pipelines-server:5000/;
-      }
-      {{ end }}
-
       {{ if .Values.metrics.enabled }}
       location /grafana/ {
         proxy_pass http://metrics-grafana:3000/;
@@ -43,6 +37,12 @@ data:
       {{ end }}
 
       {{ if .Values.committees.enabled }}
+      location /committees/data/ {
+        proxy_pass http://committees-pipelines:8080/pipelines/data/;
+      }
+      location /committees/dist/ {
+        proxy_pass http://committees-pipelines:8080/pipelines/dist/;
+      }
       location /committees/pipelines/ {
         proxy_pass http://committees-pipelines:5000/;
       }

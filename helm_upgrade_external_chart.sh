@@ -3,12 +3,18 @@
 source connect.sh
 
 usage() {
-    echo "Usage: ./helm_upgrade_external_chart.sh <EXTERNAL_CHART_NAME> [HELM_UPGRADE_ARGS].."
+    echo "Usage: ./helm_upgrade_external_chart.sh <EXTERNAL_CHART_NAME> [--deploy] [HELM_UPGRADE_ARGS].."
 }
 
 CHART_NAME="${1}"
 
 [ -z "${CHART_NAME}" ] && usage && exit 1
+
+if [ "${2}" == "--deploy" ]; then
+    ./helm_upgrade_external_chart.sh "${CHART_NAME}" --dry-run --debug ${@:3} &&\
+    ./helm_upgrade_external_chart.sh "${CHART_NAME}" ${@:3}
+    exit $?
+fi
 
 RELEASE_NAME="${K8S_HELM_RELEASE_NAME}-${CHART_NAME}-${K8S_ENVIRONMENT_NAME}"
 EXTERNAL_CHARTS_DIRECTORY="charts-external"
