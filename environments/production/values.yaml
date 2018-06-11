@@ -74,3 +74,9 @@ publicdb:
   persistentDiskName: publicdb
   # kubectl create secret generic redash-reader --from-literal=REDASH_READER_PASSWORD=***
   redashReaderSecret: redash-reader
+
+
+migdar:
+  enabled: true
+  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a migdar-data
+  persistentDiskName: migdar-data
