@@ -3,7 +3,7 @@ committees:
 people:
   image: gcr.io/hasadna-oknesset/knesset-data-people-cd:8024a33cfa3383c04e080de3746acf9618770729
 pipelines:
-  image: gcr.io/hasadna-oknesset/knesset-data-pipelines-cd:5cc2c30e242a30f0e3a6e0cb02b67c0f42253101
+  image: gcr.io/hasadna-oknesset/knesset-data-pipelines-cd:ff86cf68b74983352776c86a7a9be42b3b8a4aca
 pipelines-jobs:
   committeesImage: gcr.io/hasadna-oknesset/knesset-data-committees-cd:7be40c33a1cadef7e4b7dc4f36bde94a4b7453f5
   image: gcr.io/hasadna-oknesset/knesset-data-pipelines-cd:a7117ea29341d4db3e29bb01915c458b1959ad8b
