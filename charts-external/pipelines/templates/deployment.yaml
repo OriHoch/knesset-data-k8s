@@ -28,7 +28,7 @@ spec:
           chmod 400 secret &&\
           ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
               -p 22 -D 0.0.0.0:8123 -C -N -i secret \
-              ubuntu@db1.oknesset.org
+              adam@tzabar.obudget.org
         livenessProbe:
           exec:
             command:
