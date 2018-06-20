@@ -1,35 +1,13 @@
 language: bash
 sudo: required
-env:
-  matrix:
-  - DEPLOY_ENVIRONMENT=production DEPLOY_BRANCH=master
 services:
 - docker
+install:
+- curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sudo bash
 script:
-- |
-  if [ "${DEPLOY_ENVIRONMENT}" != "" ] && [ "${TRAVIS_PULL_REQUEST}" == "false" ] &&\
-     ( \
-      ([ "${TRAVIS_BRANCH}" == "${DEPLOY_BRANCH}" ] && ! echo "${TRAVIS_COMMIT_MESSAGE}" | grep -- --no-deploy) ||\
-      ([ "${DEPLOY_TAGS}" == "true" ] && [ "${TRAVIS_TAG}" != "" ]) \
-     )
-  then
-      openssl aes-256-cbc -K $encrypted_2cdba463b699_key -iv $encrypted_2cdba463b699_iv -in ./k8s-ops-secret.json.enc -out secret-k8s-ops.json -d
-      K8S_ENVIRONMENT_NAME="${DEPLOY_ENVIRONMENT}"
-      OPS_REPO_SLUG="OriHoch/knesset-data-k8s"
-      OPS_REPO_BRANCH="${DEPLOY_BRANCH}"
-      wget https://raw.githubusercontent.com/OriHoch/sk8s-ops/master/run_docker_ops.sh
-      chmod +x run_docker_ops.sh
-      if ./run_docker_ops.sh "${K8S_ENVIRONMENT_NAME}" "
-        cd /ops &&\
-        ./helm_upgrade_all.sh --dry-run --install &&\
-        ./helm_upgrade_all.sh --install
-      " "orihoch/sk8s-ops" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}"; then
-        true
-      else
-        echo "failed to run docker ops"
-        false
-      fi
-  else
-    echo "skipping deployment"
-    true
-  fi
+- bash helm_lint_all.sh
+deploy:
+  provider: script
+  script: bash .travis_deploy.sh
+  on:
+    branch: master
