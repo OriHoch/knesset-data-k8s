@@ -77,7 +77,7 @@ spec:
                   sleep 1
                   echo .
                 done
-                su -c 'psql -c "SELECT 1 FROM pg_roles WHERE rolname='USR_NAME';"' postgres ||\
+                su -c 'psql -c "SELECT 1 FROM pg_roles WHERE rolname='"'USR_NAME'"';"' postgres ||\
                 su -c 'psql -c "CREATE ROLE readaccess; GRANT USAGE ON SCHEMA public TO readaccess;
                 GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
                 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess;
