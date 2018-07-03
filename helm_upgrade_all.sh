@@ -10,7 +10,4 @@ for CHART_NAME in `ls charts-external`; do
     [ "$?" != "0" ] && echo "failed ${CHART_NAME} upgrade" && RES=1;
 done
 
-./helm_upgrade.sh "$@"
-[ "$?" != "0" ] && echo "failed root chart upgrade" && RES=1
-
 exit $RES

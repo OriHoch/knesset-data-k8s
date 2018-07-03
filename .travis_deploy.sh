@@ -23,8 +23,8 @@ OPS_REPO_BRANCH="${TRAVIS_BRANCH}"
         RES=1
     fi
     sleep 2;
-    kubectl get pods --all-namespaces;
-    kubectl get service --all-namespaces;
+    kubectl get pods;
+    kubectl get service;
     exit "$RES"
 ' "orihoch/sk8s-ops" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}" "secret-k8s-ops.json"
 if [ "$?" == "0" ]; then
