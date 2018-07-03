@@ -15,11 +15,11 @@ spec:
       annotations:
         checksum/nginx-config: {{ include (print $.Template.BasePath "/nginx-configmap.yaml") . | sha256sum }}
     spec:
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 5
       containers:
       - name: ssh-socks-proxy
         image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
-        resources: {"requests": {"cpu": "10m", "memory": "10Mi"}, "limits": {"cpu": "20m", "memory": "100Mi"}}
+        resources: {"requests": {"cpu": "10m", "memory": "10Mi"}, "limits": {"memory": "100Mi"}}
         command:
         - bash
         - "-c"
@@ -45,7 +45,7 @@ spec:
               key: "SSH_B64_KEY"
       - name: pipelines
         image: {{ .Values.image | quote }}
-        resources: {"requests": {"cpu": "600m", "memory": "2Gi"}, "limits": {"cpu": "1200m", "memory": "3Gi"}}
+        resources: {"requests": {"cpu": "500m", "memory": "1Gi"}, "limits": {"memory": "2Gi"}}
         command:
         - "/dpp/docker/run.sh"
         - server
@@ -62,6 +62,8 @@ spec:
           value: "1"
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /secret_service_key
+        - name: DISABLE_MEMBER_PERCENTS
+          value: {{ .Values.DISABLE_MEMBER_PERCENTS | default "" | quote }}
         volumeMounts:
         - name: k8s-ops
           mountPath: /secret_service_key
@@ -85,6 +87,16 @@ spec:
         - name: nginx-conf
           mountPath: /etc/nginx/conf.d
           readOnly: true
+        - mountPath: /pipelines/data
+          name: data
+          subPath: data
+      - name: presence
+        image: orihoch/knesset-data-k8s-presence
+        resources: {"requests": {"cpu": "25m", "memory": "100Mi"}, "limits": {"memory": "300Mi"}}
+        env:
+        - name: RESULTS_FILE
+          value: /pipelines/data/members/presence/presence.txt
+        volumeMounts:
         - mountPath: /pipelines/data
           name: data
           subPath: data

@@ -1,28 +1,17 @@
-{{ if .Values.nginx.enabled }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx
-spec:
-  ports:
-  - name: "80"
-    port: 80
-  selector:
-    app: nginx
----
+{{ if .Values.enabled }}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: nginx
 spec:
-  replicas: {{.Values.nginx.replicas | default "1"}}
+  replicas: {{.Values.replicas | default "1"}}
   template:
     metadata:
       labels:
         app: nginx
       annotations:
         # update the pod on nginx-conf changes
-        checksum/config: {{ include (print $.Template.BasePath "/nginx-conf.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       containers:
       - name: nginx
@@ -34,7 +23,7 @@ spec:
         - name: nginx-conf
           mountPath: /etc/nginx/conf.d
           readOnly: true
-        {{ if .Values.nginx.htpasswdSecretName }}
+        {{ if .Values.htpasswdSecretName }}
         - name: nginx-htpasswd
           mountPath: /etc/nginx/htpasswd
           readOnly: true
@@ -43,9 +32,9 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-conf
-      {{ if .Values.nginx.htpasswdSecretName }}
+      {{ if .Values.htpasswdSecretName }}
       - name: nginx-htpasswd
         secret:
-          secretName: {{ .Values.nginx.htpasswdSecretName }}
+          secretName: {{ .Values.htpasswdSecretName }}
       {{ end }}
 {{ end }}

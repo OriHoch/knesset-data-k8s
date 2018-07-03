@@ -1,12 +1,2 @@
-committees:
-  image: gcr.io/hasadna-oknesset/knesset-data-committees-cd:a69051faf3ad46069df870e04378545683a934a6
-people:
-  image: gcr.io/hasadna-oknesset/knesset-data-people-cd:8024a33cfa3383c04e080de3746acf9618770729
 pipelines:
-  image: orihoch/knesset-data-pipelines:86960560b205793cdb8883edbcbe82dc09ef79e1
-pipelines-jobs:
-  committeesImage: gcr.io/hasadna-oknesset/knesset-data-committees-cd:7be40c33a1cadef7e4b7dc4f36bde94a4b7453f5
-  image: gcr.io/hasadna-oknesset/knesset-data-pipelines-cd:a7117ea29341d4db3e29bb01915c458b1959ad8b
-  peopleImage: gcr.io/hasadna-oknesset/knesset-data-people-cd:9388c27b09f99599019dd4ece9ff9d71f9b415fa
-revolving-doors:
-  pipelinesImage: gcr.io/hasadna-oknesset/revolving-doors-cd:40e82c595397ac96cd3da4d63a0ffee272141e9a
+  image: orihoch/knesset-data-pipelines:63b42c1857377eb66baf89d52acfe83276258570

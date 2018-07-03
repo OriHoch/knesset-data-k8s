@@ -7,7 +7,20 @@ data:
     server {
       listen 8000;
       location /pipelines/data/ {
+        index null;
         root /;
         autoindex on;
+      }
+    }
+
+    server {
+      listen 8080;
+      error_page 404 =200 @homepageredirect;
+      rewrite ^/member/([0-9]*)/ /members/$1.html last;
+      location / {
+        root /pipelines/data/committees/dist/dist/;
+      }
+      location @homepageredirect {
+        return 302 https://{{ .Values.committeesDomain | default "oknesset.org" }}/index.html;
       }
     }

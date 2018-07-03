@@ -1,82 +1,34 @@
-global:
-  enableRootChart: true
-  environmentName: production
-  googleProjectId: hasadna-oknesset
-  backupsBucketName: oknesset-k8s-backups
-  publicdbSecret: publicdb
-
-committees:
-  enabled: true
-  DISABLE_MEMBER_PERCENTS: "yes"
-  resources: >
-    {"requests": {"cpu": "400m", "memory": "1000Mi"}, "limits": {"memory": "1500Mi"}}
-  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a committees-pipelines
-  pdName: committees-pipelines
-  committeesDomain: oknesset.org
-
-pipelines:
-  enabled: true
-  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a pipelines
-  persistentDiskName: pipelines
-  image: gcr.io/hasadna-oknesset/knesset-data-pipelines-cd:9d124ebed0ad2f938994e8f4763bd07938e4cc72
-
-people:
-  enabled: true
-  # gcloud --project=hasadna-oknesset compute disks create --size=50GB --zone=us-central1-a people
-  persistentDiskName: people
-  image: gcr.io/hasadna-oknesset/knesset-data-people-cd:9388c27b09f99599019dd4ece9ff9d71f9b415fa
-
 metrics:
   enabled: false
   GF_SERVER_DOMAIN: production.oknesset.org
 
 nginx:
   enabled: true
-  enablePipelineDashboard: false
-  mainDomain: production.oknesset.org
   htpasswdSecretName: nginx-htpasswd
+  enableMetrics: false
+  enablePipelines: true
 
-traefik:
+pipelines:
   enabled: true
-  acmeDomains: |
-    [[acme.domains]]
-      main = "production.oknesset.org"
-    [[acme.domains]]
-      main = "committees-next.oknesset.org"
-    [[acme.domains]]
-      main = "oknesset.org"
-    [[acme.domains]]
-      main = "www.oknesset.org"
-  acmeEmail: ori@uumpa.com
-  dnsProvider: route53
-  # AWS IAM user name = oknesset-route53-api
-  # kubectl create secret generic route53 --from-literal=AWS_SECRET_ACCESS_KEY=***
-  AWS_ACCESS_KEY_ID: AKIAIWMQWDTIM7IZS3EA
-  AWS_REGION: "eu-west-1"
-  # gcloud compute addresses create oknesset-production-traefik --region=us-central1
-  # gcloud compute addresses describe oknesset-production-traefik --region=us-central1 | grep ^address:
-  loadBalancerIP: "35.184.112.37"
-  enableLoadBalancer: true
-  enableCommitteesNext: true
-  committeesNextDomain: committees-next.oknesset.org
-
+  DISABLE_MEMBER_PERCENTS: "yes"
+  persistentDiskName: oknesset-pipelines
+  image: orihoch/knesset-data-pipelines
+  committeesDomain: oknesset.org
 
 publicdb:
   enabled: true
   resources: >
-    {"requests": {"cpu": "200m", "memory": "400Mi"}, "limits": {"cpu": "300m", "memory": "1500Mi"}}
+    {"requests": {"cpu": "200m", "memory": "500Mi"}, "limits": {"memory": "2Gi"}}
   adminerEnabled: true
-  enableLoadBalancer: true
+  # enableLoadBalancer: true
   # gcloud --project=hasadna-oknesset compute addresses create oknesset-production-publicdb --region=us-central1
   # gcloud --project=hasadna-oknesset compute addresses describe oknesset-production-publicdb --region=us-central1 | grep ^address:
-  loadBalancerIP: "35.184.9.19"
+  # loadBalancerIP: "35.184.9.19"
   # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a publicdb
-  persistentDiskName: publicdb
+  persistentDiskName: oknesset-publicdb
   # kubectl create secret generic redash-reader --from-literal=REDASH_READER_PASSWORD=***
   redashReaderSecret: redash-reader
-
-
-migdar:
-  enabled: true
-  # gcloud --project=hasadna-oknesset compute disks create --size=100GB --zone=us-central1-a migdar-data
-  persistentDiskName: migdar-data
+  secretName: publicdb
+  nodeSelector: 'oknesset-postgres: "true"'
+  # kubectl get nodes -l oknesset-postgres=true -o 'jsonpath={.items[0].status.addresses[?(@.type=='"'"'ExternalIP'"'"')].address}'
+  enableHostPort: true
