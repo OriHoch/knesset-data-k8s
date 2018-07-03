@@ -1,0 +1,5 @@
+pipelines:
+  automatic-update:
+    commit-message: automatic update of knesset-data-pipelines
+    deployment-name: pipelines
+    container-name: pipelines
