@@ -9,11 +9,16 @@ OPS_REPO_BRANCH="${TRAVIS_BRANCH}"
 ./run_docker_ops.sh "${K8S_ENVIRONMENT_NAME}" '
     RES=0;
     curl -L https://raw.githubusercontent.com/hasadna/hasadna-k8s/master/apps_travis_script.sh | bash /dev/stdin install_helm;
-    if echo "'"${TRAVIS_COMMIT_MESSAGE}"'" | grep "automatic update of knesset-data-pipelines"; then
-        kubectl set image --dry-run -o yaml deployment/pipelines "pipelines=$(eval echo $(./read_env_yaml.sh pipelines image))" &&\
-        kubectl set image deployment/pipelines "pipelines=$(eval echo $(./read_env_yaml.sh pipelines image))" &&\
-        bash charts-external/pipelines/healthcheck.sh
-        [ "$?" != "0" ] && echo failed to update pipelines image && exit 1
+    ./kubectl_patch_charts.py '"${TRAVIS_COMMIT_MESSAGE}"' --dry-run
+    PATCH_RES=$?
+    if [ "${PATCH_RES}" != "2" ]; then
+        echo detected patches based on commit message
+        if [ "${PATCH_RES}" == "0" ]; then
+            ! ./kubectl_patch_charts.py '"${TRAVIS_COMMIT_MESSAGE}"' && echo failed patches && RES=1
+            ! ./helm_healthcheck.sh && echo Failed healthcheck && RES=1
+        else
+            echo patches dry run failed && RES=1
+        fi
     elif ./helm_upgrade_all.sh --install --dry-run --debug; then
         echo Dry run was successfull, performing upgrades
         ! ./helm_upgrade_all.sh --install && echo Failed upgrade && RES=1
