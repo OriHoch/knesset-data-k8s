@@ -91,7 +91,7 @@ spec:
           name: data
           subPath: data
       - name: presence
-        image: orihoch/knesset-data-k8s-presence
+        image: orihoch/knesset-data-k8s-presence@sha256:88818c1be3505f81d793ea4e847d1be5b3e5d79241bc45c7d9e4c849163fca27
         resources: {"requests": {"cpu": "25m", "memory": "100Mi"}, "limits": {"memory": "300Mi"}}
         env:
         - name: RESULTS_FILE

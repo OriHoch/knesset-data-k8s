@@ -19,7 +19,9 @@ class PresenceManager(object):
         self._write_log('--- %s --- Starting running kneset presence check ' % str(datetime.now()))
         self._write_log('--- SLEEP_TIME_BETWEEN_CHECKS = {} ---'.format(SLEEP_TIME_BETWEEN_CHECKS))
         self._write_log('--- RESULTS_FILE = {} ---'.format(RESULTS_FILE))
-        os.makedirs(os.path.dirname(RESULTS_FILE))
+        results_dir = os.path.dirname(RESULTS_FILE)
+        if results_dir and not os.path.exists(results_dir):
+            os.makedirs(os.path.dirname(RESULTS_FILE))
         while True:
             # self._write_log('--- %s --- Parsing kneset HTML' % str(datetime.now()) )
             try:
