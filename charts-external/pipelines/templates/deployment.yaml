@@ -45,7 +45,7 @@ spec:
               key: "SSH_B64_KEY"
       - name: pipelines
         image: {{ .Values.image | quote }}
-        resources: {"requests": {"cpu": "500m", "memory": "1Gi"}, "limits": {"memory": "2Gi"}}
+        resources: {"requests": {"cpu": "200m", "memory": "1Gi"}, "limits": {"memory": "2Gi"}}
         command:
         - "/dpp/docker/run.sh"
         - server
@@ -64,6 +64,10 @@ spec:
           value: /secret_service_key
         - name: DISABLE_MEMBER_PERCENTS
           value: {{ .Values.DISABLE_MEMBER_PERCENTS | default "" | quote }}
+        {{ if .Values.enableTika }}
+        - name: TIKA_SERVER_ENDPOINT
+          value: http://tika:9998
+        {{ end }}
         volumeMounts:
         - name: k8s-ops
           mountPath: /secret_service_key
@@ -82,7 +86,7 @@ spec:
         image: nginx:alpine
         ports:
         - containerPort: 8000
-        resources: {"requests": {"cpu": "50m", "memory": "150Mi"}, "limits": {"memory": "300Mi"}}
+        resources: {"requests": {"cpu": "15m", "memory": "50Mi"}, "limits": {"memory": "200Mi"}}
         volumeMounts:
         - name: nginx-conf
           mountPath: /etc/nginx/conf.d
@@ -92,7 +96,7 @@ spec:
           subPath: data
       - name: presence
         image: orihoch/knesset-data-k8s-presence@sha256:88818c1be3505f81d793ea4e847d1be5b3e5d79241bc45c7d9e4c849163fca27
-        resources: {"requests": {"cpu": "25m", "memory": "100Mi"}, "limits": {"memory": "300Mi"}}
+        resources: {"requests": {"cpu": "10m", "memory": "50Mi"}, "limits": {"memory": "200Mi"}}
         env:
         - name: RESULTS_FILE
           value: /pipelines/data/members/presence/presence.txt

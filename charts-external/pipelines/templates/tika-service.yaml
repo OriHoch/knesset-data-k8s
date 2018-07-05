@@ -1,0 +1,12 @@
+{{ if and .Values.enabled .Values.enableTika }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: tika
+spec:
+  ports:
+  - name: '9998'
+    port: 9998
+  selector:
+    app: tika
+{{ end }}

@@ -14,6 +14,7 @@ pipelines:
   persistentDiskName: oknesset-pipelines
   image: orihoch/knesset-data-pipelines
   committeesDomain: oknesset.org
+  enableTika: true
 
 publicdb:
   enabled: true

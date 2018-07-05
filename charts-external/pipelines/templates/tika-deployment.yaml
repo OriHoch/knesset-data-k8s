@@ -1,0 +1,23 @@
+{{ if and .Values.enabled .Values.enableTika }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tika
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tika
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: tika
+        image: logicalspark/docker-tikaserver
+        resources: {"requests": {"cpu": "50m", "memory": "200Mi"}, "limits": {"memory": "500Mi"}}
+        ports:
+        - containerPort: 9998
+{{ end }}

@@ -18,7 +18,7 @@ spec:
         image: nginx:alpine
         ports:
         - containerPort: 80
-        resources: {"requests": {"cpu": "20m", "memory": "20Mi"}}
+        resources: {"requests": {"cpu": "20m", "memory": "50Mi"}, "limits": {"memory": "200Mi"}}
         volumeMounts:
         - name: nginx-conf
           mountPath: /etc/nginx/conf.d
