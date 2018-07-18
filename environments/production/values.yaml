@@ -7,6 +7,7 @@ nginx:
   htpasswdSecretName: nginx-htpasswd
   enableMetrics: false
   enablePipelines: true
+  enableAdminer: true
 
 pipelines:
   enabled: true

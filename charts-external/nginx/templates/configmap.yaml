@@ -26,6 +26,13 @@ data:
         proxy_pass http://pipelines:5000/;
       }
       {{ end }}
+
+      {{ if .Values.enableAdminer }}
+      location /adminer/ {
+        proxy_pass http://publicdb-adminer:8080/;
+        include /etc/nginx/conf.d/restricted.inc;
+      }
+      {{ end }}
     }
 
     server {
