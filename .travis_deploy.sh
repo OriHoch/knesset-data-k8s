@@ -31,7 +31,8 @@ OPS_REPO_BRANCH="${TRAVIS_BRANCH}"
     kubectl get pods;
     kubectl get service;
     exit "$RES"
-' "orihoch/sk8s-ops" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}" "secret-k8s-ops.json"
+' "orihoch/knesset-data-k8s-ops" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}" "secret-k8s-ops.json" \
+    "-v /var/run/docker.sock:/var/run/docker.sock"
 if [ "$?" == "0" ]; then
     echo travis deployment success
     exit 0

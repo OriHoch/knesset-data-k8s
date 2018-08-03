@@ -48,7 +48,7 @@ spec:
         resources: {"requests": {"cpu": "200m", "memory": "1Gi"}, "limits": {"memory": "2Gi"}}
         command:
         - "/dpp/docker/run.sh"
-        - server
+        - server-reload
         ports:
         - containerPort: 5000
         env:
