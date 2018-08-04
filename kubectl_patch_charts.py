@@ -14,7 +14,7 @@ if commit_message:
         if os.path.exists('charts-external/{}'.format(chart_name)):
             if chart_values.get('automatic-update'):
                 auto_update_values = chart_values['automatic-update']
-                if auto_update_values['commit-message'] in commit_message:
+                if auto_update_values['commit-message'] in commit_message or commit_message == chart_name:
                     container_name = auto_update_values['container-name']
                     if auto_update_values.get('daemonset-name'):
                         object_type = 'daemonset'
@@ -54,9 +54,9 @@ if commit_message:
                                                                        pod_name, target_uuid,
                                                                        container_name),
                                 'rm -fr {}'.format(chart_name),
-                                "kubectl exec -c {0} {1} /{2}/pipelines/bin/hot-reload.sh {2}".format(container_name,
-                                                                                                      pod_name,
-                                                                                                      target_uuid,),
+                                "kubectl exec -c {0} {1} sh /{2}/pipelines/bin/docker-hot-reload.sh {2}".format(container_name,
+                                                                                                                pod_name,
+                                                                                                                target_uuid,),
                             ]:
                                 if os.system(cmd) != 0:
                                     print('failed hot reload ({})'.format(cmd))
