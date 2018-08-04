@@ -54,19 +54,9 @@ if commit_message:
                                                                        pod_name, target_uuid,
                                                                        container_name),
                                 'rm -fr {}'.format(chart_name),
-                                "kubectl exec -c {} {} cp -fR /{}/pipelines/'*' /{}/".format(container_name,
-                                                                                             pod_name,
-                                                                                             target_uuid,
-                                                                                             target_dir),
-                                "kubectl exec -c {} {} rm -fr /{}".format(container_name,
-                                                                          pod_name,
-                                                                          target_uuid),
-                                "kubectl exec -c {} {} pipenv install --system --deploy --ignore-pipfile".format(container_name,
-                                                                                                                 pod_name),
-                                "kubectl exec -c {} {} pip install .".format(container_name,
-                                                                             pod_name),
-                                "kubectl exec -c {} {} /dpp/docker/run.sh stop-server".format(container_name,
-                                                                                              pod_name)
+                                "kubectl exec -c {} {} /{2}/pipelines/bin/hot-reload.sh {2}".format(container_name,
+                                                                                                    pod_name,
+                                                                                                    target_uuid,),
                             ]:
                                 if os.system(cmd) != 0:
                                     print('failed hot reload ({})'.format(cmd))
