@@ -61,7 +61,12 @@ if commit_message:
                                 "kubectl exec -c {} {} rm -fr /{}".format(container_name,
                                                                           pod_name,
                                                                           target_uuid),
-                                "kubectl exec -c {} {} kill -1 1".format(container_name, pod_name)
+                                "kubectl exec -c {} {} pipenv install --system --deploy --ignore-pipfile".format(container_name,
+                                                                                                                 pod_name),
+                                "kubectl exec -c {} {} pip install .".format(container_name,
+                                                                             pod_name),
+                                "kubectl exec -c {} {} /dpp/docker/run.sh stop-server".format(container_name,
+                                                                                              pod_name)
                             ]:
                                 if os.system(cmd) != 0:
                                     print('failed hot reload ({})'.format(cmd))
