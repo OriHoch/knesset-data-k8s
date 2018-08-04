@@ -54,9 +54,9 @@ if commit_message:
                                                                        pod_name, target_uuid,
                                                                        container_name),
                                 'rm -fr {}'.format(chart_name),
-                                "kubectl exec -c {} {} /{2}/pipelines/bin/hot-reload.sh {2}".format(container_name,
-                                                                                                    pod_name,
-                                                                                                    target_uuid,),
+                                "kubectl exec -c {0} {1} /{2}/pipelines/bin/hot-reload.sh {2}".format(container_name,
+                                                                                                      pod_name,
+                                                                                                      target_uuid,),
                             ]:
                                 if os.system(cmd) != 0:
                                     print('failed hot reload ({})'.format(cmd))
