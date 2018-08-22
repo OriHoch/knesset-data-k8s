@@ -18,6 +18,7 @@ data:
       error_page 404 =200 @homepageredirect;
       rewrite ^/member/([0-9]*)/ /members/$1.html last;
       location / {
+        add_header 'Access-Control-Allow-Origin' '*';
         root /pipelines/data/committees/dist/dist/;
       }
       location @homepageredirect {
