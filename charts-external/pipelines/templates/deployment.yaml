@@ -45,7 +45,7 @@ spec:
               key: "SSH_B64_KEY"
       - name: pipelines
         image: {{ .Values.image | quote }}
-        resources: {"requests": {"cpu": "800m", "memory": "1500Mi"}, "limits": {"memory": "3Gi"}}
+        resources: {"requests": {"cpu": "400m", "memory": "1500Mi"}, "limits": {"memory": "3Gi"}}
         command:
         - "/dpp/docker/run.sh"
         - server-reload

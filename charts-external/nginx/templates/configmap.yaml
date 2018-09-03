@@ -35,19 +35,19 @@ data:
       {{ end }}
     }
 
-    server {
-      listen 80;
-      server_name www.oknesset.org committees-next.oknesset.org;
-      return 301 https://oknesset.org$request_uri;
-    }
-
-    server {
-      listen 80;
-      server_name oknesset.org;
-      location / {
-        proxy_pass http://pipelines:8080/;
-      }
-    }
+#    server {
+#      listen 80;
+#      server_name www.oknesset.org committees-next.oknesset.org;
+#      return 301 https://oknesset.org$request_uri;
+#    }
+#
+#    server {
+#      listen 80;
+#      server_name oknesset.org;
+#      location / {
+#        proxy_pass http://pipelines:8080/;
+#      }
+#    }
 
   healthcheck.inc: |
     location = / {
