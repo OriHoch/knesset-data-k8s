@@ -12,8 +12,6 @@ spec:
     metadata:
       labels:
         app: pipelines
-      annotations:
-        checksum/nginx-config: {{ include (print $.Template.BasePath "/nginx-configmap.yaml") . | sha256sum }}
     spec:
       terminationGracePeriodSeconds: 5
       containers:
@@ -45,7 +43,7 @@ spec:
               key: "SSH_B64_KEY"
       - name: pipelines
         image: {{ .Values.image | quote }}
-        resources: {"requests": {"cpu": "400m", "memory": "1500Mi"}, "limits": {"memory": "3Gi"}}
+        resources: {"requests": {"cpu": "800m", "memory": "1500Mi"}, "limits": {"memory": "3Gi"}}
         command:
         - "/dpp/docker/run.sh"
         - server-reload
@@ -82,18 +80,6 @@ spec:
         - mountPath: /var/redis
           name: data
           subPath: redis
-      - name: nginx
-        image: nginx:alpine
-        ports:
-        - containerPort: 8000
-        resources: {"requests": {"cpu": "15m", "memory": "50Mi"}, "limits": {"memory": "200Mi"}}
-        volumeMounts:
-        - name: nginx-conf
-          mountPath: /etc/nginx/conf.d
-          readOnly: true
-        - mountPath: /pipelines/data
-          name: data
-          subPath: data
       - name: presence
         image: orihoch/knesset-data-k8s-presence@sha256:88818c1be3505f81d793ea4e847d1be5b3e5d79241bc45c7d9e4c849163fca27
         resources: {"requests": {"cpu": "10m", "memory": "50Mi"}, "limits": {"memory": "200Mi"}}
@@ -105,9 +91,6 @@ spec:
           name: data
           subPath: data
       volumes:
-      - name: nginx-conf
-        configMap:
-          name: pipelines-nginx
       - name: k8s-ops
         secret:
           secretName: ops

@@ -16,7 +16,7 @@ spec:
       containers:
       - name: nfs
         image: k8s.gcr.io/volume-nfs:0.8
-        resources: {"requests": {"cpu": "60m", "memory": "100Mi"}}
+        resources: {"requests": {"cpu": "200m", "memory": "500Mi"}}
         ports:
           - name: nfs
             containerPort: 2049
