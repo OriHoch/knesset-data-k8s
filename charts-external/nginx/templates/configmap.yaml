@@ -20,7 +20,13 @@ data:
 
       {{ if .Values.enablePipelines }}
       location /pipelines/data/ {
+        {{ if .Values.pipelinesDataNfsServer }}
+        index null;
+        root /;
+        autoindex on;
+        {{ else }}
         proxy_pass http://pipelines:8000/pipelines/data/;
+        {{ end }}
       }
       location /pipelines/ {
         proxy_pass http://pipelines:5000/;
@@ -35,19 +41,33 @@ data:
       {{ end }}
     }
 
-#    server {
-#      listen 80;
-#      server_name www.oknesset.org committees-next.oknesset.org;
-#      return 301 https://oknesset.org$request_uri;
-#    }
-#
-#    server {
-#      listen 80;
-#      server_name oknesset.org;
-#      location / {
-#        proxy_pass http://pipelines:8080/;
-#      }
-#    }
+    {{ if .Values.enableDist }}
+    server {
+      listen 80;
+      server_name www.oknesset.org committees-next.oknesset.org;
+      return 301 https://oknesset.org$request_uri;
+    }
+
+    server {
+      listen 80;
+      server_name oknesset.org;
+      {{ if .Values.pipelinesDataNfsServer }}
+      error_page 404 =200 @homepageredirect;
+      rewrite ^/member/([0-9]*)/ /members/$1.html last;
+      location / {
+        add_header 'Access-Control-Allow-Origin' '*';
+        root /pipelines/data/committees/dist/dist/;
+      }
+      location @homepageredirect {
+        return 302 https://{{ .Values.committeesDomain | default "oknesset.org" }}/index.html;
+      }
+      {{ else }}
+      location / {
+        proxy_pass http://pipelines:8080/;
+      }
+      {{ end }}
+    }
+    {{ end }}
 
   healthcheck.inc: |
     location = / {

@@ -112,6 +112,12 @@ spec:
         secret:
           secretName: ops
       - name: data
+        {{ if .Values.enableNfs }}
+        nfs:
+          server: {{ .Values.nfsServer }}
+          path: "/"
+        {{ else }}
         gcePersistentDisk:
           pdName: {{ .Values.persistentDiskName | quote }}
+        {{ end }}
 {{ end }}

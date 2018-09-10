@@ -1,0 +1,28 @@
+{{ if and .Values.enabled .Values.nfsGcePersistentDiskName }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  # must be unique for the entire cluster
+  name: oknesset-nfs-gcepd
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 100G
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: {{ .Values.nfsGcePersistentDiskName | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oknesset-nfs-gcepd
+spec:
+  storageClassName: ""
+  volumeName: oknesset-nfs-gcepd
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100G
+{{ end }}

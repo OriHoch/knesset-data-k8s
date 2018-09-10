@@ -8,6 +8,9 @@ nginx:
   enableMetrics: false
   enablePipelines: true
   enableAdminer: true
+  enableDist: false
+  pipelinesDataNfsServer: "10.23.242.146"
+  committeesDomain: oknesset.org
 
 pipelines:
   enabled: true
@@ -16,6 +19,9 @@ pipelines:
   image: orihoch/knesset-data-pipelines
   committeesDomain: oknesset.org
   enableTika: true
+  enableNfs: true
+  nfsGcePersistentDiskName: oknesset-pipelines-nfs
+  nfsServer: "10.23.242.146"
 
 publicdb:
   enabled: true
