@@ -4,4 +4,4 @@ pipelines:
     deployment-name: pipelines
     container-name: pipelines
     app-name: pipelines
-    pipelines-hot-reload: true
+#    pipelines-hot-reload: true

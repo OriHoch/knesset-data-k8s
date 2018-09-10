@@ -67,6 +67,6 @@ spec:
       {{ end }}
       volumes:
       - name: data
-        gcePersistentDisk:
-          pdName: {{ .Values.persistentDiskName | quote }}
+        persistentVolumeClaim:
+          claimName: oknesset-publicdb-gcepd
 {{ end }}

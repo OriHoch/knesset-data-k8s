@@ -1,0 +1,28 @@
+{{ if .Values.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  # must be unique for the entire cluster
+  name: oknesset-publicdb-gcepd
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 100G
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: {{ .Values.persistentDiskName | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oknesset-publicdb-gcepd
+spec:
+  storageClassName: ""
+  volumeName: oknesset-publicdb-gcepd
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100G
+{{ end }}
