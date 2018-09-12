@@ -8,7 +8,7 @@ nginx:
   enableMetrics: false
   enablePipelines: true
   enableAdminer: true
-  enableDist: false
+  enableDist: true
   pipelinesDataNfsServer: "10.23.242.146"
   committeesDomain: oknesset.org
 
