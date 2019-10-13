@@ -1,2 +1,2 @@
 pipelines:
-  image: orihoch/knesset-data-pipelines:80e86efd93e2adaadb5b0ff34b6813630f25b56a
+  image: orihoch/knesset-data-pipelines:29e7afa1086ba39948bc11c8d774777a604d0217
