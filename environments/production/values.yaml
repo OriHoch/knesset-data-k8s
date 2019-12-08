@@ -38,7 +38,7 @@ publicdb:
   redashReaderSecret: redash-reader
   secretName: publicdb
   # publicdb uses kube-ip-dns-updater side container which updates dns if node changes
-  nodeSelector: 'kubernetes.io/hostname: gke-hasadna-cluster-pool-4-2f6c125a-9bwg'
+  nodeSelector: 'kubernetes.io/hostname: gke-hasadna-cluster-pool-4-2f6c125a-zd90'
   # kubectl get nodes -l oknesset-postgres=true -o 'jsonpath={.items[0].status.addresses[?(@.type=='"'"'ExternalIP'"'"')].address}'
   enableHostPort: true
   # see https://github.com/OriHoch/kube-ip-dns-updater
