@@ -39,7 +39,7 @@ OPS_REPO_BRANCH="${TRAVIS_BRANCH}"
     kubectl get pods;
     kubectl get service;
     exit "$RES"
-' "orihoch/knesset-data-k8s-ops@sha256:a02e5dd7110e7e48ba1f8dea3fff4fbeab12eeab47f3e488b2160688053a0013" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}" "$RANCHER_TOKEN" "$RANCHER_ENDPOINT" \
+' "orihoch/knesset-data-k8s-ops@sha256:a02e5dd7110e7e48ba1f8dea3fff4fbeab12eeab47f3e488b2160688053a0013" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}" "$RANCHER_ENDPOINT" "$RANCHER_TOKEN" \
     "-v /var/run/docker.sock:/var/run/docker.sock"
 if [ "$?" == "0" ]; then
     echo travis deployment success
