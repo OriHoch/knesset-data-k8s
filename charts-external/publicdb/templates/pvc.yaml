@@ -1,4 +1,5 @@
 {{ if .Values.enabled }}
+{{ if not .Values.nfsServer }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -25,4 +26,5 @@ spec:
   resources:
     requests:
       storage: 100G
+{{ end }}
 {{ end }}

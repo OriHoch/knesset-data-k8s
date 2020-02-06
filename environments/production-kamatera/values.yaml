@@ -1,0 +1,55 @@
+metrics:
+  enabled: false
+  GF_SERVER_DOMAIN: production.oknesset.org
+
+nginx:
+  enabled: true
+  htpasswdSecretName: nginx-htpasswd
+  enableMetrics: false
+  enablePipelines: true
+  enableAdminer: true
+  enableDist: true
+  pipelinesDataNfsServer: "172.16.0.2"
+  pipelinesDataNfsServerPath: "/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+  committeesDomain: oknesset.org
+  ingress:
+    tls: true
+    hostnames:
+      - oknesset.org
+      - www.oknesset.org
+      - committees-next.oknesset.org
+      - production.oknesset.org
+
+pipelines:
+  enabled: true
+  DISABLE_MEMBER_PERCENTS: "yes"
+#  persistentDiskName: oknesset-pipelines
+  image: orihoch/knesset-data-pipelines
+  committeesDomain: oknesset.org
+  enableTika: true
+  enableNfs: true
+#  nfsGcePersistentDiskName: oknesset-pipelines-nfs
+  nfsServer: "172.16.0.2"
+  nfsServerPath: "/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+
+publicdb:
+  enabled: true
+  resources: >
+    {"requests": {"cpu": "200m", "memory": "500Mi"}, "limits": {"memory": "2Gi"}}
+  adminerEnabled: true
+  nfsServer: "172.16.0.2"
+  nfsServerPath: "/srv/default/oknesset/publicdb/data/oknesset-publicdb-gcepd"
+  # kubectl create secret generic redash-reader --from-literal=REDASH_READER_PASSWORD=***
+  redashReaderSecret: redash-reader
+  secretName: publicdb
+  # publicdb uses kube-ip-dns-updater side container which updates dns if node changes
+  nodeSelector: 'kubernetes.io/hostname: hasadna-worker1'
+  # kubectl get nodes -l oknesset-postgres=true -o 'jsonpath={.items[0].status.addresses[?(@.type=='"'"'ExternalIP'"'"')].address}'
+  enableHostPort: true
+  # see https://github.com/OriHoch/kube-ip-dns-updater
+  # kubeIpDnsUpdaterSecret: publicdb-dns-updater
+  # see environments/production/publicdb-kube-ip-dns-updater-rbac.yaml
+  # kubeIpDnsUpdaterServiceAccountName: oknesset-publicdb-kube-ip-dns-updater
+
+web-ui:
+  enabled: false

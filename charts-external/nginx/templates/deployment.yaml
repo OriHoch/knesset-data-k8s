@@ -1,9 +1,12 @@
 {{ if .Values.enabled }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
 spec:
+  selector:
+    matchLabels:
+      app: nginx
   replicas: {{.Values.replicas | default "1"}}
   template:
     metadata:
@@ -47,6 +50,6 @@ spec:
       - name: pipelines-data
         nfs:
           server: {{ .Values.pipelinesDataNfsServer }}
-          path: "/"
+          path: {{ .Values.pipelinesDataNfsServerPath | default "/" | quote }}
       {{ end }}
 {{ end }}

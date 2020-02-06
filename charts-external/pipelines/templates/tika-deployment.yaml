@@ -1,9 +1,12 @@
 {{ if and .Values.enabled .Values.enableTika }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tika
 spec:
+  selector:
+    matchLabels:
+      app: tika
   replicas: 1
   revisionHistoryLimit: 2
   strategy:

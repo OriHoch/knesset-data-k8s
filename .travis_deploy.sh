@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 
+HELM_VERSION="v3.0.3"
+
+if [ "${1}" == "install_helm" ]; then
+  curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh &&\
+  chmod 700 get_helm.sh &&\
+  ./get_helm.sh --version "${HELM_VERSION}" &&\
+  helm version --client --short | grep "${HELM_VERSION}+"
+  exit $?
+fi
+
 echo "${TRAVIS_COMMIT_MESSAGE}" | grep -- --no-deploy && echo skipping deployment && exit 0
 
-openssl aes-256-cbc -K $encrypted_2cdba463b699_key -iv $encrypted_2cdba463b699_iv -in ./k8s-ops-secret.json.enc -out secret-k8s-ops.json -d
-K8S_ENVIRONMENT_NAME="production"
+K8S_ENVIRONMENT_NAME="production-kamatera"
 OPS_REPO_SLUG="OriHoch/knesset-data-k8s"
 OPS_REPO_BRANCH="${TRAVIS_BRANCH}"
 ./run_docker_ops.sh "${K8S_ENVIRONMENT_NAME}" '
     RES=0;
-    curl -L https://raw.githubusercontent.com/hasadna/hasadna-k8s/master/apps_travis_script.sh | bash /dev/stdin install_helm;
     ./kubectl_patch_charts.py "'"${TRAVIS_COMMIT_MESSAGE}"'" --dry-run
     PATCH_RES=$?
     if [ "${PATCH_RES}" != "2" ]; then
@@ -31,7 +39,7 @@ OPS_REPO_BRANCH="${TRAVIS_BRANCH}"
     kubectl get pods;
     kubectl get service;
     exit "$RES"
-' "orihoch/knesset-data-k8s-ops" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}" "secret-k8s-ops.json" \
+' "orihoch/knesset-data-k8s-ops@sha256:a02e5dd7110e7e48ba1f8dea3fff4fbeab12eeab47f3e488b2160688053a0013" "${OPS_REPO_SLUG}" "${OPS_REPO_BRANCH}" "$RANCHER_TOKEN" "$RANCHER_ENDPOINT" \
     "-v /var/run/docker.sock:/var/run/docker.sock"
 if [ "$?" == "0" ]; then
     echo travis deployment success

@@ -1,0 +1,29 @@
+{{ if .Values.ingress }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  {{ if .Values.ingress.tls }}
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  {{ end }}
+  name: nginx
+  namespace: oknesset
+spec:
+  rules:
+  {{ range .Values.ingress.hostnames }}
+  - host: {{ . }}
+    http:
+      paths:
+      - backend:
+          serviceName: nginx
+          servicePort: 80
+  {{ end }}
+  {{ if .Values.ingress.tls }}
+  tls:
+  - hosts:
+    {{ range .Values.ingress.hostnames }}
+    - {{ . }}
+    {{ end }}
+    secretName: nginx-cert
+  {{ end }}
+{{ end }}

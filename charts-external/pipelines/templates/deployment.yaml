@@ -1,9 +1,12 @@
 {{ if .Values.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pipelines
 spec:
+  selector:
+    matchLabels:
+      app: pipelines
   replicas: 1
   revisionHistoryLimit: 2
   strategy:
@@ -98,7 +101,7 @@ spec:
         {{ if .Values.enableNfs }}
         nfs:
           server: {{ .Values.nfsServer }}
-          path: "/"
+          path: {{ .Values.nfsServerPath | default "/" | quote }}
         {{ else }}
         gcePersistentDisk:
           pdName: {{ .Values.persistentDiskName | quote }}
