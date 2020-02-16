@@ -81,14 +81,14 @@ mount_nfs_and_rsync `get_pod_node_name oknesset publicdb-` $TARGET_NFS_IP \
 Rsync pipelines data (run from NFS node):
 
 ```
-CLOUDSDK_CORE_PROJECT=hasadna-oknesset gsutil -o "GSUtil:parallel_process_count=8" -o "GSUtil:parallel_thread_count=1" -m \
+CLOUDSDK_CORE_PROJECT=hasadna-oknesset gsutil \
     rsync -J -R gs://knesset-data-pipelines/data/dist /srv/default/oknesset/pipelines/data/committees/dist/dist
 ```
 
 ```
 for DIR in bills committees knesset laws lobbyists members people plenum votes; do
-  CLOUDSDK_CORE_PROJECT=hasadna-oknesset gsutil -o "GSUtil:parallel_process_count=8" -o "GSUtil:parallel_thread_count=1" -m \
-      rsync -J -R gs://knesset-data-pipelines/data/$DIR /srv/default/oknesset/pipelines/data/$DIR
+  CLOUDSDK_CORE_PROJECT=hasadna-oknesset gsutil \
+      rsync -J -R gs://knesset-data-pipelines/data/$DIR/ /srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd/data/$DIR/
 done
 ```
 
