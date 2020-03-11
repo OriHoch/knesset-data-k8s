@@ -9,8 +9,8 @@ nginx:
   enablePipelines: true
   enableAdminer: true
   enableDist: true
-  pipelinesDataNfsServer: "172.16.0.2"
-  pipelinesDataNfsServerPath: "/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+  pipelinesDataNfsServer: "172.16.0.9"
+  pipelinesDataNfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
   committeesDomain: oknesset.org
   ingress:
     tls: true
@@ -29,16 +29,16 @@ pipelines:
   enableTika: true
   enableNfs: true
 #  nfsGcePersistentDiskName: oknesset-pipelines-nfs
-  nfsServer: "172.16.0.2"
-  nfsServerPath: "/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+  nfsServer: "172.16.0.9"
+  nfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
 
 publicdb:
   enabled: true
   resources: >
     {"requests": {"cpu": "200m", "memory": "500Mi"}, "limits": {"memory": "2Gi"}}
   adminerEnabled: true
-  nfsServer: "172.16.0.2"
-  nfsServerPath: "/srv/default/oknesset/publicdb/data/oknesset-publicdb-gcepd"
+  nfsServer: "172.16.0.9"
+  nfsServerPath: "/mnt/sdb3/srv/default/oknesset/publicdb/data/oknesset-publicdb-gcepd"
   # kubectl create secret generic redash-reader --from-literal=REDASH_READER_PASSWORD=***
   redashReaderSecret: redash-reader
   secretName: publicdb
