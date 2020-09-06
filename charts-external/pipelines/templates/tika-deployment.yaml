@@ -20,7 +20,7 @@ spec:
       containers:
       - name: tika
         image: logicalspark/docker-tikaserver
-        resources: {"requests": {"cpu": "200m", "memory": "1Gi"}, "limits": {"cpu": "600m", "memory": "2Gi"}}
+        resources: {"requests": {"cpu": "25m", "memory": "729Mi"}, "limits": {"cpu": "78m", "memory": "2Gi"}}
         ports:
         - containerPort: 9998
 {{ end }}

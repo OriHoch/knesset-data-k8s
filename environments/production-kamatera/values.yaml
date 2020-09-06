@@ -46,7 +46,7 @@ pipelines:
 publicdb:
   enabled: true
   resources: >
-    {"requests": {"cpu": "200m", "memory": "500Mi"}, "limits": {"memory": "2Gi"}}
+    {"requests": {"cpu": "25m", "memory": "826Mi"}, "limits": {"cpu": "78m", "memory": "2Gi"}}
   adminerEnabled: true
   nfsServer: "172.16.0.9"
   nfsServerPath: "/mnt/sdb3/srv/default/oknesset/publicdb/data/oknesset-publicdb-gcepd"

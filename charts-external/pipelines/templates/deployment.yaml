@@ -20,7 +20,7 @@ spec:
       containers:
       - name: ssh-socks-proxy
         image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
-        resources: {"requests": {"cpu": "10m", "memory": "10Mi"}, "limits": {"memory": "100Mi"}}
+        resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "83Mi"}}
         command:
         - bash
         - "-c"
@@ -46,7 +46,7 @@ spec:
               key: "SSH_B64_KEY"
       - name: pipelines
         image: {{ .Values.image | quote }}
-        resources: {"requests": {"cpu": "800m", "memory": "1500Mi"}, "limits": {"memory": "3Gi"}}
+        resources: {"requests": {"cpu": "548m", "memory": "1568Mi"}, "limits": {"cpu": "1200m", "memory": "3Gi"}}
         command:
         - "/dpp/docker/run.sh"
         - server-reload
@@ -85,7 +85,7 @@ spec:
           subPath: redis
       - name: presence
         image: orihoch/knesset-data-k8s-presence@sha256:88818c1be3505f81d793ea4e847d1be5b3e5d79241bc45c7d9e4c849163fca27
-        resources: {"requests": {"cpu": "10m", "memory": "50Mi"}, "limits": {"memory": "200Mi"}}
+        resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "435Mi"}}
         env:
         - name: RESULTS_FILE
           value: /pipelines/data/members/presence/presence.txt
