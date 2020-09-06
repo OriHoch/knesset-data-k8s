@@ -19,6 +19,10 @@ nginx:
       - www.oknesset.org
       - committees-next.oknesset.org
       - production.oknesset.org
+  vertical_pod_autoscalers:
+  - apiVersion: apps/v1
+    kind: deployment
+    name: nginx
 
 pipelines:
   enabled: true
@@ -31,6 +35,13 @@ pipelines:
 #  nfsGcePersistentDiskName: oknesset-pipelines-nfs
   nfsServer: "172.16.0.9"
   nfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+  vertical_pod_autoscalers:
+  - apiVersion: apps/v1
+    kind: deployment
+    name: pipelines
+  - apiVersion: apps/v1
+    kind: deployment
+    name: tika
 
 publicdb:
   enabled: true
@@ -50,6 +61,10 @@ publicdb:
   # kubeIpDnsUpdaterSecret: publicdb-dns-updater
   # see environments/production/publicdb-kube-ip-dns-updater-rbac.yaml
   # kubeIpDnsUpdaterServiceAccountName: oknesset-publicdb-kube-ip-dns-updater
+  vertical_pod_autoscalers:
+  - apiVersion: apps/v1
+    kind: deployment
+    name: publicdb
 
 web-ui:
   enabled: false
