@@ -37,7 +37,6 @@ apps:
   - name: oknesset-publicdb
     project: oknesset
     destinationNamespace: oknesset
-    disableAutoSync: true
     source:
       repoURL: 'https://github.com/OriHoch/knesset-data-k8s.git'
       targetRevision: master

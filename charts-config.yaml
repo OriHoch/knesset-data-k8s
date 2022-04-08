@@ -1,7 +1,0 @@
-pipelines:
-  automatic-update:
-    commit-message: automatic update of knesset-data-pipelines
-    deployment-name: pipelines
-    container-name: pipelines
-    app-name: pipelines
-#    pipelines-hot-reload: true
