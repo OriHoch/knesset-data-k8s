@@ -11,15 +11,6 @@ kubectl create secret generic publicdb --from-literal=POSTGRES_PASSWORD=${POSTGR
                                         --from-literal=DPP_DB_ENGINE=postgresql://postgres:${POSTGRES_PASSWORD}@publicdb:5432/postgres
 ```
 
-
-## Deployment
-
-```
-./helm_upgrade_external_chart.sh publicdb --install --dry-run --debug \
-&& ./helm_upgrade_external_chart.sh publicdb --install
-```
-
-
 ## Connect to the DB with adminer
 
 enable adminer in the publicdb values:

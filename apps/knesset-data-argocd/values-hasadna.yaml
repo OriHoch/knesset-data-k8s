@@ -25,7 +25,6 @@ apps:
   - name: oknesset-pipelines
     project: oknesset
     destinationNamespace: oknesset
-    disableAutoSync: true
     source:
       repoURL: 'https://github.com/OriHoch/knesset-data-k8s.git'
       targetRevision: master
@@ -34,3 +33,15 @@ apps:
         valueFiles:
           - values-hasadna.yaml
           - values-hasadna-auto-updated.yaml
+
+  - name: oknesset-publicdb
+    project: oknesset
+    destinationNamespace: oknesset
+    disableAutoSync: true
+    source:
+      repoURL: 'https://github.com/OriHoch/knesset-data-k8s.git'
+      targetRevision: master
+      path: apps/publicdb
+      helm:
+        valueFiles:
+          - values-hasadna.yaml
