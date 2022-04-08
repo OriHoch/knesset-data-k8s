@@ -1,0 +1,17 @@
+enabled: true
+DISABLE_MEMBER_PERCENTS: "yes"
+#  persistentDiskName: oknesset-pipelines
+image: orihoch/knesset-data-pipelines
+committeesDomain: oknesset.org
+enableTika: true
+enableNfs: true
+#  nfsGcePersistentDiskName: oknesset-pipelines-nfs
+nfsServer: "172.16.0.9"
+nfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+vertical_pod_autoscalers:
+- apiVersion: apps/v1
+  kind: deployment
+  name: pipelines
+- apiVersion: apps/v1
+  kind: deployment
+  name: tika

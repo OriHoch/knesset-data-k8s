@@ -14,7 +14,6 @@ apps:
   - name: oknesset-nginx
     project: oknesset
     destinationNamespace: oknesset
-    disableAutoSync: true
     source:
       repoURL: 'https://github.com/OriHoch/knesset-data-k8s.git'
       targetRevision: master
@@ -22,3 +21,16 @@ apps:
       helm:
         valueFiles:
           - values-hasadna.yaml
+
+  - name: oknesset-pipelines
+    project: oknesset
+    destinationNamespace: oknesset
+    disableAutoSync: true
+    source:
+      repoURL: 'https://github.com/OriHoch/knesset-data-k8s.git'
+      targetRevision: master
+      path: apps/pipelines
+      helm:
+        valueFiles:
+          - values-hasadna.yaml
+          - values-hasadna-auto-updated.yaml
