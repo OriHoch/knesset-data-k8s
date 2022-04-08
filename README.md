@@ -1,6 +1,8 @@
 # Knesset Data Kubernetes Environment
 
-See https://github.com/hasadna/hasadna-k8s/blob/master/docs/argocd.md for defining deployed apps and continuous deployment.
+Infrastructure is defined as a helm charts under `apps/`
+
+The charts are continuously synced to Hasadna cluster via ArgoCD as defined [here](https://github.com/hasadna/hasadna-k8s/blob/master/apps/hasadna-argocd/values-hasadna.yaml).
 
 ## Connecting to the Kamatera environment
 
