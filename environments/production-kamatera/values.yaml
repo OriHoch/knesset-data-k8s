@@ -2,28 +2,6 @@ metrics:
   enabled: false
   GF_SERVER_DOMAIN: production.oknesset.org
 
-nginx:
-  enabled: true
-  htpasswdSecretName: nginx-htpasswd
-  enableMetrics: false
-  enablePipelines: true
-  enableAdminer: true
-  enableDist: true
-  pipelinesDataNfsServer: "172.16.0.9"
-  pipelinesDataNfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
-  committeesDomain: oknesset.org
-  ingress:
-    tls: true
-    hostnames:
-      - oknesset.org
-      - www.oknesset.org
-      - committees-next.oknesset.org
-      - production.oknesset.org
-  vertical_pod_autoscalers:
-  - apiVersion: apps/v1
-    kind: deployment
-    name: nginx
-
 pipelines:
   enabled: true
   DISABLE_MEMBER_PERCENTS: "yes"

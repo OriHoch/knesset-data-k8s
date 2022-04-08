@@ -1,0 +1,24 @@
+projects:
+
+  - name: oknesset
+    spec:
+      destinations:
+        - name: '*'
+          namespace: oknesset
+          server: 'https://kubernetes.default.svc'
+      sourceRepos:
+        - 'https://github.com/OriHoch/knesset-data-k8s.git'
+
+apps:
+
+  - name: oknesset-nginx
+    project: oknesset
+    destinationNamespace: oknesset
+    disableAutoSync: true
+    source:
+      repoURL: 'https://github.com/OriHoch/knesset-data-k8s.git'
+      targetRevision: master
+      path: apps/nginx
+      helm:
+        valueFiles:
+          - values-hasadna.yaml
