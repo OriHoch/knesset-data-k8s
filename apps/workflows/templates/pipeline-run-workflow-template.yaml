@@ -12,8 +12,18 @@ spec:
     - name: run
       container:
         image: rancher/kubectl:v1.19.15@sha256:fd3d9b88a080a498976fdb5303e22a5217ef509b1e06b1256c1a8277c779ba67
-        args: [
-          "-n", "oknesset", "exec", "-it", "-c", "pipelines", "deployment/pipelines",
-          "--", "bash", "-c",
-          "DPP_REDIS_HOST=127.0.0.1 DPP_CELERY_BROKER=redis://localhost:6379/6 dpp run --verbose {{ "{{workflow.parameters.pipeline}}" | quote }}"
-        ]
+        args:
+          - -n
+          - oknesset
+          - exec
+          - -it
+          - -c
+          - pipelines
+          - deployment/pipelines
+          - --
+          - bash
+          - -c
+          - |
+            export DPP_REDIS_HOST=127.0.0.1
+            export DPP_CELERY_BROKER=redis://localhost:6379/6
+            dpp run --verbose {{ "{{workflow.parameters.pipeline}}" | quote }}
