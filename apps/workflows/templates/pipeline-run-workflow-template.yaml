@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: build-cloudcli-binaries
+  name: pipeline-run
 spec:
   entrypoint: run
   arguments:
@@ -10,6 +10,7 @@ spec:
         default: "./members/kns_position"
   templates:
     - name: run
+      serviceAccountName: pipeline-run
       container:
         image: rancher/kubectl:v1.19.15@sha256:fd3d9b88a080a498976fdb5303e22a5217ef509b1e06b1256c1a8277c779ba67
         args:
