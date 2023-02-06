@@ -98,6 +98,5 @@ ENV/
 .mypy_cache/
 
 /.env
-secret*
 .idea
 /pipelines
