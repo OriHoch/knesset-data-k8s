@@ -8,6 +8,33 @@ enableNfs: true
 #  nfsGcePersistentDiskName: oknesset-pipelines-nfs
 nfsServer: "172.16.0.9"
 nfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+
+airflowDb:
+  image: "postgres:15"
+  resources: '{"requests": {"cpu": "200m", "memory": "1000Mi"}, "limits": {"memory": "2000Mi"}}'
+  nfsPath: "/oknesset/airflow-db"
+
+airflowWebserver:
+  resources: '{"requests": {"cpu": "250m", "memory": "1000Mi"}, "limits": {"memory": "2000Mi"}}'
+
+airflowScheduler:
+  resources: '{"requests": {"cpu": "600m", "memory": "8000Mi"}, "limits": {"memory": "12000Mi"}}'
+
+airflow:
+  homeNfsPath: "/oknesset/airflow-home"
+  enableEmails: false
+  AIRFLOW__SMTP__SMTP_MAIL_FROM: "Knesset Data Airflow <knesset-data-airflow@hasadna.org.il>"
+  AIRFLOW__WEBSERVER__BASE_URL: "https://airflow.oknesset.org"
+
+secrets:
+  - name: airflow-db
+    data:
+      POSTGRES_PASSWORD: "~vault:Projects/oknesset/k8s-secrets:airflow-db-postgres-password~"
+      SQLALCHEMY_URL: "~vault:Projects/oknesset/k8s-secrets:airflow-db-sqlalchemy-url~"
+  - name: airflow
+    data:
+      admin_password: "~vault:Projects/oknesset/k8s-secrets:airflow-admin-password~"
+
 vertical_pod_autoscalers:
 - apiVersion: apps/v1
   kind: deployment
