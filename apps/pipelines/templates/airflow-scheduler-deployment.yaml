@@ -61,11 +61,16 @@ spec:
               value: "hasadna-oknesset"
             - name: KNESSET_DATA_PIPELINES_AIRFLOW_ADMIN_PASSWORD
               valueFrom: {"secretKeyRef": {"name": "airflow", "key": "admin_password" }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/var/airflow-google-service-account/key.json"
           volumeMounts:
             - name: airflow-home
               mountPath: /var/airflow
             - name: data
               mountPath: /data
+            - name: airflow-secret
+              subPath: google-service-account-key-json
+              mountPath: /var/airflow-google-service-account/key.json
       volumes:
         - name: airflow-home
           nfs:
@@ -75,3 +80,6 @@ spec:
           nfs:
             server: {{ .Values.nfsServer | quote }}
             path: {{ .Values.nfsServerPath }}
+        - name: airflow-secret
+          secret:
+              secretName: airflow
