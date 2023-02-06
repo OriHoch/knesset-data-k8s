@@ -32,4 +32,4 @@ spec:
         - name: airflow-home
           nfs:
             server: {{ .Values.nfsServer | quote }}
-            path: {{ .Values.airflowHomeNfsPath | quote }}
+            path: {{ .Values.airflow.homeNfsPath | quote }}
