@@ -35,6 +35,14 @@ secrets:
     data:
       admin_password: "~vault:Projects/oknesset/k8s-secrets:airflow-admin-password~"
 
+ingresses:
+  - name: airflow
+    ssl: true
+    rules:
+      - host: "airflow.oknesset.org"
+        serviceName: airflow-webserver
+        servicePort: 8080
+
 vertical_pod_autoscalers:
 - apiVersion: apps/v1
   kind: deployment
