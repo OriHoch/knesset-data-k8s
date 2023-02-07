@@ -16,6 +16,9 @@ spec:
       labels:
         app: pipelines
     spec:
+      nodeSelector:
+        # This node label is updated by apps/openbus/bin/update_node_allowed_ips.py script
+        oknesset-allowed-ip: "true"
       terminationGracePeriodSeconds: 5
       containers:
       - name: ssh-socks-proxy
