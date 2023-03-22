@@ -1,4 +1,5 @@
 backendResources: {"requests": {"cpu": "500m", "memory": "500Mi"}, "limits": {"memory": "1000Mi"}}
+frontendResources: {"requests": {"cpu": "100m", "memory": "100Mi"}, "limits": {"memory": "200Mi"}}
 
 secrets:
   - name: publicdb-readonly
@@ -12,4 +13,10 @@ ingresses:
     rules:
       - host: "backend.oknesset.org"
         serviceName: backend
+        servicePort: 80
+  - name: frontend
+    ssl: true
+    rules:
+      - host: "frontend.oknesset.org"
+        serviceName: frontend
         servicePort: 80
