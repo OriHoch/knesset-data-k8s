@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  replicas: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: backend
+        image: {{ .Values.backendImage }}
+        resources: {{ .Values.backendResources }}
+        env:
+        - name: OKNESSET_DB_HOST
+          value: publicdb
+        - name: OKNESSET_DB_PORT
+          value: "5432"
+        - name: OKNESSET_DB_NAME
+          value: postgres
+        - name: OKNESSET_DB_USER
+          valueFrom: {secretKeyRef: {name: publicdb-readonly, key: USER}}
+        - name: OKNESSET_DB_PASSWORD
+          valueFrom: {secretKeyRef: {name: publicdb-readonly, key: PASSWORD}}

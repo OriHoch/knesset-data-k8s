@@ -1,0 +1,15 @@
+backendResources: {"requests": {"cpu": "500m", "memory": "500Mi"}, "limits": {"memory": "1000Mi"}}
+
+secrets:
+  - name: publicdb-readonly
+    data:
+      USER: "~vault:Projects/oknesset/db_redash_reader:user~"
+      PASSWORD: "~vault:Projects/oknesset/db_redash_reader:password~"
+
+ingresses:
+  - name: backend
+    ssl: true
+    rules:
+      - host: "backend.oknesset.org"
+        serviceName: backend
+        servicePort: 80
