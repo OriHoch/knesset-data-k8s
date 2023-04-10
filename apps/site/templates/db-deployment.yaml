@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: site-db
+spec:
+  selector:
+    matchLabels:
+      app: site-db
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: site-db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: postgres
+        # Pulled Aug 12, 2022
+        image: postgres:15@sha256:5a90725b3751c2c7ac311c9384dfc1a8f6e41823e341fb1dceed96a11677303a
+        resources: {{ toYaml .Values.db.resources | nindent 10 }}
+        ports:
+          - containerPort: 5432
+        env:
+          - name: POSTGRES_PASSWORD
+            valueFrom: {"secretKeyRef":{"name":"site-db", "key":"password"}}
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+          # postgres doesn't let you use the root of a disk (complaints about having lost+found directory)
+          subPath: dbdata
+      volumes:
+      - name: data
+        nfs:
+          server: {{ .Values.db.nfsServer | quote }}
+          path: {{ $.Values.db.nfsPath | quote }}
