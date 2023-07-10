@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app: airflow-scheduler
+    serviceAccountName: airflow-scheduler
     spec:
       nodeSelector:
         # This node label is updated by apps/openbus/bin/update_node_allowed_ips.py script
