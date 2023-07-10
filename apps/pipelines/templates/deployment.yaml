@@ -16,76 +16,76 @@ spec:
       labels:
         app: pipelines
     spec:
-      nodeSelector:
-        # This node label is updated by apps/openbus/bin/update_node_allowed_ips.py script
-        oknesset-allowed-ip: "true"
+#      nodeSelector:
+#        # This node label is updated by apps/openbus/bin/update_node_allowed_ips.py script
+#        oknesset-allowed-ip: "true"
       terminationGracePeriodSeconds: 5
       containers:
-      - name: ssh-socks-proxy
-        image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
-        resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "83Mi"}}
-        command:
-        - bash
-        - "-c"
-        - |
-          echo $SSH_B64_KEY | base64 -d > secret &&\
-          chmod 400 secret &&\
-          ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-              -p 22 -D 0.0.0.0:8123 -C -N -i secret \
-              adam@tzabar.obudget.org
-        livenessProbe:
-          exec:
-            command:
-            - bash
-            - "-c"
-            - curl -fsS --socks5-hostname "localhost:8123" http://knesset.gov.il/Odata/ParliamentInfo.svc//KNS_KnessetDates >/dev/null
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        env:
-        - name: SSH_B64_KEY
-          valueFrom:
-            secretKeyRef:
-              name: "ssh-socks-proxy"
-              key: "SSH_B64_KEY"
-      - name: pipelines
-        image: {{ .Values.image | quote }}
-        resources: {"requests": {"cpu": "1388m", "memory": "3151Mi"}, "limits": {"cpu": "2000m", "memory": "4000Mi"}}
-        command:
-        - "/dpp/docker/run.sh"
-        - server-reload
-        ports:
-        - containerPort: 5000
-        env:
-        - name: DATASERVICE_HTTP_PROXY
-          value: socks5h://127.0.0.1:8123
-        - name: DPP_DB_ENGINE
-          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
-        - name: DUMP_TO_STORAGE
-          value: "1"
-        - name: DUMP_TO_SQL
-          value: "1"
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /secret_service_key
-        - name: DISABLE_MEMBER_PERCENTS
-          value: {{ .Values.DISABLE_MEMBER_PERCENTS | default "" | quote }}
-        {{ if .Values.enableTika }}
-        - name: TIKA_SERVER_ENDPOINT
-          value: http://tika:9998
-        {{ end }}
-        volumeMounts:
-        - name: k8s-ops
-          mountPath: /secret_service_key
-          subPath: secret.json
-          readOnly: true
-        - mountPath: /pipelines/data
-          name: data
-          subPath: data
-        - mountPath: /pipelines/dist
-          name: data
-          subPath: dist
-        - mountPath: /var/redis
-          name: data
-          subPath: redis
+#      - name: ssh-socks-proxy
+#        image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
+#        resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "83Mi"}}
+#        command:
+#        - bash
+#        - "-c"
+#        - |
+#          echo $SSH_B64_KEY | base64 -d > secret &&\
+#          chmod 400 secret &&\
+#          ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+#              -p 22 -D 0.0.0.0:8123 -C -N -i secret \
+#              adam@tzabar.obudget.org
+#        livenessProbe:
+#          exec:
+#            command:
+#            - bash
+#            - "-c"
+#            - curl -fsS --socks5-hostname "localhost:8123" http://knesset.gov.il/Odata/ParliamentInfo.svc//KNS_KnessetDates >/dev/null
+#          initialDelaySeconds: 5
+#          periodSeconds: 5
+#        env:
+#        - name: SSH_B64_KEY
+#          valueFrom:
+#            secretKeyRef:
+#              name: "ssh-socks-proxy"
+#              key: "SSH_B64_KEY"
+#      - name: pipelines
+#        image: {{ .Values.image | quote }}
+#        resources: {"requests": {"cpu": "1388m", "memory": "3151Mi"}, "limits": {"cpu": "2000m", "memory": "4000Mi"}}
+#        command:
+#        - "/dpp/docker/run.sh"
+#        - server-reload
+#        ports:
+#        - containerPort: 5000
+#        env:
+#        - name: DATASERVICE_HTTP_PROXY
+#          value: socks5h://127.0.0.1:8123
+#        - name: DPP_DB_ENGINE
+#          valueFrom: {"secretKeyRef":{"name":"publicdb", "key":"DPP_DB_ENGINE"}}
+#        - name: DUMP_TO_STORAGE
+#          value: "1"
+#        - name: DUMP_TO_SQL
+#          value: "1"
+#        - name: GOOGLE_APPLICATION_CREDENTIALS
+#          value: /secret_service_key
+#        - name: DISABLE_MEMBER_PERCENTS
+#          value: {{ .Values.DISABLE_MEMBER_PERCENTS | default "" | quote }}
+#        {{ if .Values.enableTika }}
+#        - name: TIKA_SERVER_ENDPOINT
+#          value: http://tika:9998
+#        {{ end }}
+#        volumeMounts:
+#        - name: k8s-ops
+#          mountPath: /secret_service_key
+#          subPath: secret.json
+#          readOnly: true
+#        - mountPath: /pipelines/data
+#          name: data
+#          subPath: data
+#        - mountPath: /pipelines/dist
+#          name: data
+#          subPath: dist
+#        - mountPath: /var/redis
+#          name: data
+#          subPath: redis
       - name: presence
         image: orihoch/knesset-data-k8s-presence@sha256:88818c1be3505f81d793ea4e847d1be5b3e5d79241bc45c7d9e4c849163fca27
         resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "435Mi"}}
@@ -97,9 +97,9 @@ spec:
           name: data
           subPath: data
       volumes:
-      - name: k8s-ops
-        secret:
-          secretName: ops
+#      - name: k8s-ops
+#        secret:
+#          secretName: ops
       - name: data
         {{ if .Values.enableNfs }}
         nfs:
