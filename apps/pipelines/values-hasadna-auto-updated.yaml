@@ -1,2 +1,2 @@
-airflowImage: ghcr.io/hasadna/knesset-data-pipelines/knesset-data-pipelines-airflow:31996eecf4658df353b02fa8b3ac63b6a634baf3
-image: ghcr.io/hasadna/knesset-data-pipelines/knesset-data-pipelines-legacy:31996eecf4658df353b02fa8b3ac63b6a634baf3
+airflowImage: ghcr.io/hasadna/knesset-data-pipelines/knesset-data-pipelines-airflow:3270b75bcfe4d6d2300a68e52d9226fa6239990b
+image: ghcr.io/hasadna/knesset-data-pipelines/knesset-data-pipelines-legacy:3270b75bcfe4d6d2300a68e52d9226fa6239990b
