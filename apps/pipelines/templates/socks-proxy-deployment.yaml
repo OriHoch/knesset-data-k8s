@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dante-socks-proxy
+spec:
+  selector:
+    matchLabels:
+      app: dante-socks-proxy
+  replicas: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: dante-socks-proxy
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: dante
+          # built from pipelines/dante
+          image: orihoch/dante@sha256:ce3720f632dfba7081b6be36babc0c35b3adf3800d5e2247f4200e1164b95279
+          resources: {"requests": {"cpu": "20m", "memory": "100Mi"}, "limits": {"cpu": "20m", "memory": "100Mi"}}
+          command:
+            - dante
+            - -f
+            - /etc/dante/dante.conf
+          volumeMounts:
+            - name: dante-secret-conf
+              mountPath: /etc/dante
+      volumes:
+        - name: dante-secret-conf
+          secret:
+            secretName: dante-conf
