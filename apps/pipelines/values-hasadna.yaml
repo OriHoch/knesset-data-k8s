@@ -26,6 +26,8 @@ airflow:
   AIRFLOW__SMTP__SMTP_MAIL_FROM: "Knesset Data Airflow <knesset-data-airflow@hasadna.org.il>"
   AIRFLOW__WEBSERVER__BASE_URL: "https://airflow.oknesset.org"
 
+danteNodePort: 30378
+
 secrets:
   - name: airflow-db
     data:
