@@ -20,7 +20,7 @@ spec:
           image: orihoch/dante@sha256:ce3720f632dfba7081b6be36babc0c35b3adf3800d5e2247f4200e1164b95279
           resources: {"requests": {"cpu": "20m", "memory": "100Mi"}, "limits": {"cpu": "20m", "memory": "100Mi"}}
           command:
-            - dante
+            - danted
             - -f
             - /etc/dante/dante.conf
           volumeMounts:
