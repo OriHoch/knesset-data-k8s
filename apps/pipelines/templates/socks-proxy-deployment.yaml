@@ -17,16 +17,20 @@ spec:
       containers:
         - name: dante
           # built from pipelines/dante
-          image: orihoch/dante@sha256:ce3720f632dfba7081b6be36babc0c35b3adf3800d5e2247f4200e1164b95279
+          image: orihoch/dante@sha256:1c2c0ace870d621e62b9cd48437c0120e7d9a0ecd34c50da6e02cf2877096444
           resources: {"requests": {"cpu": "20m", "memory": "100Mi"}, "limits": {"cpu": "20m", "memory": "100Mi"}}
           command:
             - danted
             - -f
             - /etc/dante/dante.conf
-          volumeMounts:
-            - name: dante-secret-conf
-              mountPath: /etc/dante
-      volumes:
-        - name: dante-secret-conf
-          secret:
-            secretName: dante-conf
+          env:
+            - name: DANTE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dante-conf
+                  key: username
+            - name: DANTE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: dante-conf
+                  key: password

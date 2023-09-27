@@ -37,7 +37,8 @@ secrets:
       google-service-account-key-json: "~vault:Projects/oknesset/k8s-secrets:google-service-account-key-json~"
   - name: dante-conf
     data:
-      dante.conf: "~vault:Projects/oknesset/k8s-secrets:dante-conf~"
+      username: "~vault:Projects/oknesset/k8s-secrets:dante-username~"
+      password: "~vault:Projects/oknesset/k8s-secrets:dante-password~"
 
 ingresses:
   - name: airflow
