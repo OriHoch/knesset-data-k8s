@@ -40,3 +40,11 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess;
 CREATE USER redash_reader WITH PASSWORD '*******';
 GRANT readaccess TO redash_reader;
 ```
+
+## Set limitations on the read only redash users
+
+```
+ALTER ROLE redash_reader SET idle_in_transaction_session_timeout = '10min';
+ALTER ROLE redash_reader SET statement_timeout = '5min';
+ALTER ROLE redash_reader SET lock_timeout = '5s';
+```
