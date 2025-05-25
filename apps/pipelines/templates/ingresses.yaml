@@ -1,5 +1,5 @@
 {{ range .Values.ingresses }}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .name }}
@@ -27,9 +27,13 @@ spec:
   - host: {{ .host }}
     http:
       paths:
-      - backend:
-          serviceName: {{ .serviceName }}
-          servicePort: {{ .servicePort }}
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .serviceName }}
+            port:
+              number: {{ .servicePort }}
   {{ end }}
   {{ if .ssl }}
   tls:
