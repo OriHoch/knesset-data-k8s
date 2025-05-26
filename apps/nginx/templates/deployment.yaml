@@ -31,17 +31,10 @@ spec:
           mountPath: /etc/nginx/htpasswd
           readOnly: true
         {{ end }}
-        {{- if .Values.pipelinesDataNfsServer }}
         - name: pipelines-data
           mountPath: /pipelines/data
           subPath: data
           readOnly: true
-        {{- else if .Values.pipelinesDataPvcName }}
-        - name: pipelines-data
-          mountPath: /pipelines/data
-          subPath: data
-          readOnly: true
-        {{- end }}
       volumes:
       - name: nginx-conf
         configMap:
@@ -51,14 +44,14 @@ spec:
         secret:
           secretName: {{ .Values.htpasswdSecretName }}
       {{ end }}
-        {{- if .Values.pipelinesDataNfsServer }}
-        - name: pipelines-data
-          nfs:
-            server: {{ .Values.pipelinesDataNfsServer }}
-            path: {{ .Values.pipelinesDataNfsServerPath | default "/" | quote }}
-        {{- else if .Values.pipelinesDataPvcName }}
-        - name: pipelines-data
-          persistentVolumeClaim:
-            claimName: {{ .Values.pipelinesDataPvcName }}
-        {{- end }}
+      {{- if .Values.pipelinesDataNfsServer }}
+      - name: pipelines-data
+        nfs:
+          server: {{ .Values.pipelinesDataNfsServer }}
+          path: {{ .Values.pipelinesDataNfsServerPath | default "/" | quote }}
+      {{- else if .Values.pipelinesDataPvcName }}
+      - name: pipelines-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.pipelinesDataPvcName }}
+      {{- end }}
 {{ end }}
