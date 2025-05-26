@@ -18,7 +18,14 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:alpine
+        # Pulled May 26, 2025
+        image: nginx:alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+        command:
+          - /bin/sh
+          - -c
+          - |
+            sed -i 's|worker_processes  auto|worker_processes 4|' /etc/nginx/nginx.conf
+            exec /docker-entrypoint.sh nginx -g 'daemon off;'
         ports:
         - containerPort: 80
         resources: {"requests": {"cpu": "25m", "memory": "256Mi"}, "limits": {"cpu": "78m", "memory": "256Mi"}}
