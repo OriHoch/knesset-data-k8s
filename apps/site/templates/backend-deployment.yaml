@@ -29,3 +29,5 @@ spec:
           valueFrom: {secretKeyRef: {name: publicdb-readonly, key: USER}}
         - name: OKNESSET_DB_PASSWORD
           valueFrom: {secretKeyRef: {name: publicdb-readonly, key: PASSWORD}}
+        - name: WEB_CONCURRENCY
+          value: "4"
