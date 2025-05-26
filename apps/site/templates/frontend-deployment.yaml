@@ -18,3 +18,9 @@ spec:
       - name: frontend
         image: {{ .Values.frontendImage }}
         resources: {{ .Values.frontendResources | toYaml | nindent 10 }}
+        command:
+          - /bin/bash
+          - -c
+          - |
+            sed -i 's|worker_processes  auto|worker_processes 4|' /etc/nginx/nginx.conf
+            exec /docker-entrypoint.sh nginx -g 'daemon off;'
