@@ -16,9 +16,10 @@ spec:
         app: airflow-scheduler
     spec:
       serviceAccountName: airflow-scheduler
-      nodeSelector:
+      # TODO: fix for rke2
+      # nodeSelector:
         # This node label is updated by apps/openbus/bin/update_node_allowed_ips.py script
-        oknesset-allowed-ip: "true"
+        # oknesset-allowed-ip: "true"
       terminationGracePeriodSeconds: 240
       containers:
         - name: scheduler
