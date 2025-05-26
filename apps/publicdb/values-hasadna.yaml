@@ -8,7 +8,8 @@ nfsServerPath: "/mnt/sdb3/srv/default/oknesset/publicdb/data/oknesset-publicdb-g
 redashReaderSecret: redash-reader
 secretName: publicdb
 # publicdb uses kube-ip-dns-updater side container which updates dns if node changes
-nodeSelector: 'kubernetes.io/hostname: hasadna-worker1'
+# TODO: fix for rke2 upgrade
+#nodeSelector: 'kubernetes.io/hostname: hasadna-worker1'
 # kubectl get nodes -l oknesset-postgres=true -o 'jsonpath={.items[0].status.addresses[?(@.type=='"'"'ExternalIP'"'"')].address}'
 enableHostPort: true
 # see https://github.com/OriHoch/kube-ip-dns-updater
