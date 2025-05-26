@@ -4,8 +4,10 @@ enableMetrics: false
 enablePipelines: true
 enableAdminer: true
 enableDist: true
-pipelinesDataNfsServer: "172.16.0.9"
-pipelinesDataNfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+# use pipelinesDataPvcName to mount an existing PersistentVolumeClaim instead of NFS
+pipelinesDataPvcName: nginx
+# pipelinesDataNfsServer: "172.16.0.9"
+# pipelinesDataNfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
 committeesDomain: oknesset.org
 ingress:
   tls: true
