@@ -83,29 +83,12 @@ spec:
               mountPath: /var/airflow-google-service-account/key.json
       volumes:
           - name: airflow-home
-            {{- if .Values.enableNfs }}
             nfs:
-              server: {{ .Values.nfsServer | quote }}
+              server: {{ .Values.airflow.nfsServer | quote }}
               path: {{ .Values.airflow.homeNfsPath | quote }}
-            {{- else if .Values.airflowScheduler.pvcName }}
-            persistentVolumeClaim:
-              claimName: {{ .Values.airflowScheduler.pvcName }}
-              # subPath equivalent of airflow home directory
-              # scheduler pvc is expected to contain this directory
-              # this keeps compatibility with previous NFS layout
-              # we rely on existing directory structure
-              # subPath cannot be set here for pvc (k8s limitations),
-              # mount entire pvc and use path inside container
-            {{- end }}
           - name: data
-            {{- if .Values.enableNfs }}
-            nfs:
-              server: {{ .Values.nfsServer | quote }}
-              path: {{ .Values.nfsServerPath }}
-            {{- else if .Values.airflowScheduler.pvcName }}
             persistentVolumeClaim:
               claimName: {{ .Values.airflowScheduler.pvcName }}
-            {{- end }}
           - name: airflow-secret
             secret:
                 secretName: airflow
