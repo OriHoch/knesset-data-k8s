@@ -105,6 +105,6 @@ spec:
             persistentVolumeClaim:
               claimName: {{ .Values.airflowScheduler.pvcName }}
             {{- end }}
-        - name: airflow-secret
-          secret:
-              secretName: airflow
+          - name: airflow-secret
+            secret:
+                secretName: airflow
