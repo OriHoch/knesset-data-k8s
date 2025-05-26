@@ -25,6 +25,7 @@ airflowScheduler:
   pvcName: airflow-scheduler
 
 airflow:
+  nfsServer: "172.16.0.9"
   homeNfsPath: "/oknesset/airflow-home"
   enableEmails: false
   AIRFLOW__SMTP__SMTP_MAIL_FROM: "Knesset Data Airflow <knesset-data-airflow@hasadna.org.il>"

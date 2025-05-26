@@ -31,5 +31,5 @@ spec:
       volumes:
         - name: airflow-home
           nfs:
-            server: {{ .Values.nfsServer | quote }}
+            server: {{ .Values.airflow.nfsServer | quote }}
             path: {{ .Values.airflow.homeNfsPath | quote }}
