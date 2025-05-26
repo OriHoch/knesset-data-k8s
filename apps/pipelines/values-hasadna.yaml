@@ -4,10 +4,12 @@ DISABLE_MEMBER_PERCENTS: "yes"
 image: orihoch/knesset-data-pipelines
 committeesDomain: oknesset.org
 enableTika: true
-enableNfs: true
+enableNfs: false
+# pvcName defines an existing PersistentVolumeClaim to mount instead of NFS
+pvcName: pipelines
 #  nfsGcePersistentDiskName: oknesset-pipelines-nfs
-nfsServer: "172.16.0.9"
-nfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
+# nfsServer: "172.16.0.9"
+# nfsServerPath: "/mnt/sdb3/srv/default/oknesset/pipelines/data/oknesset-nfs-gcepd"
 
 airflowDb:
   image: "postgres:15"
@@ -19,6 +21,7 @@ airflowWebserver:
 
 airflowScheduler:
   resources: '{"requests": {"cpu": "600m", "memory": "8000Mi"}, "limits": {"memory": "12000Mi"}}'
+  pvcName: airflow-scheduler
 
 airflow:
   homeNfsPath: "/oknesset/airflow-home"

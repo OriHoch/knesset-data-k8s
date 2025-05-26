@@ -100,13 +100,16 @@ spec:
 #      - name: k8s-ops
 #        secret:
 #          secretName: ops
-      - name: data
-        {{ if .Values.enableNfs }}
-        nfs:
-          server: {{ .Values.nfsServer }}
-          path: {{ .Values.nfsServerPath | default "/" | quote }}
-        {{ else }}
-        gcePersistentDisk:
-          pdName: {{ .Values.persistentDiskName | quote }}
-        {{ end }}
+        - name: data
+          {{- if .Values.enableNfs }}
+          nfs:
+            server: {{ .Values.nfsServer }}
+            path: {{ .Values.nfsServerPath | default "/" | quote }}
+          {{- else if .Values.pvcName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.pvcName }}
+          {{- else }}
+          gcePersistentDisk:
+            pdName: {{ .Values.persistentDiskName | quote }}
+          {{- end }}
 {{ end }}
