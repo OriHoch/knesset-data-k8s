@@ -30,5 +30,5 @@ spec:
       volumes:
       - name: data
         nfs:
-          server: {{ .Values.nfsServer | quote }}
+          server: {{ .Values.airflowDb.nfsServer | quote }}
           path: {{ .Values.airflowDb.nfsPath | quote }}
