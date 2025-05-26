@@ -20,7 +20,7 @@ data:
 
       {{ if .Values.enablePipelines }}
       location /pipelines/data/ {
-        {{ if .Values.pipelinesDataNfsServer }}
+        {{ if or .Values.pipelinesDataNfsServer .Values.pipelinesDataPvcName }}
         index null;
         root /;
         autoindex on;
@@ -51,7 +51,7 @@ data:
     server {
       listen 80;
       server_name oknesset.org;
-      {{ if .Values.pipelinesDataNfsServer }}
+      {{ if or .Values.pipelinesDataNfsServer .Values.pipelinesDataPvcName }}
       error_page 404 =200 @homepageredirect;
       rewrite ^/member/([0-9]*)/ /members/$1.html last;
       location / {
