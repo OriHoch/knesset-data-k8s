@@ -30,6 +30,8 @@ spec:
               mountPath: /var/airflow
       volumes:
         - name: airflow-home
-          nfs:
-            server: {{ .Values.airflow.nfsServer | quote }}
-            path: {{ .Values.airflow.homeNfsPath | quote }}
+          persistentVolumeClaim:
+            claimName: airflow-home2
+#          nfs:
+#            server: {{ .Values.airflow.nfsServer | quote }}
+#            path: {{ .Values.airflow.homeNfsPath | quote }}
