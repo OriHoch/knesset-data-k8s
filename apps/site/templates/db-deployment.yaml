@@ -33,6 +33,8 @@ spec:
           subPath: dbdata
       volumes:
       - name: data
-        nfs:
-          server: {{ .Values.db.nfsServer | quote }}
-          path: {{ $.Values.db.nfsPath | quote }}
+        persistentVolumeClaim:
+          claimName: site-db2
+#        nfs:
+#          server: {{ .Values.db.nfsServer | quote }}
+#          path: {{ $.Values.db.nfsPath | quote }}
