@@ -16,15 +16,14 @@ spec:
         app: airflow-scheduler
     spec:
       serviceAccountName: airflow-scheduler
-      # TODO: fix for rke2
-      # nodeSelector:
-        # This node label is updated by apps/openbus/bin/update_node_allowed_ips.py script
-        # oknesset-allowed-ip: "true"
       terminationGracePeriodSeconds: 240
       containers:
         - name: scheduler
           image: {{ .Values.airflowImage }}
           resources: {{ .Values.airflowScheduler.resources }}
+          envFrom:
+            - configMapRef:
+                name: hasadna-proxy1
           env:
             - name: KNESSET_DATA_PIPELINES_AIRFLOW_ROLE
               value: "scheduler"
