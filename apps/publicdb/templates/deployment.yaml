@@ -84,12 +84,6 @@ spec:
       {{ end }}
       volumes:
       - name: data
-        {{ if and .Values.nfsServer .Values.nfsServerPath }}
-        nfs:
-          server: {{ .Values.nfsServer }}
-          path: {{ .Values.nfsServerPath | default "/" | quote }}
-        {{ else }}
         persistentVolumeClaim:
-          claimName: oknesset-publicdb-gcepd
-        {{ end }}
+          claimName: publicdb
 {{ end }}
