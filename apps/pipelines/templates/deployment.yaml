@@ -1,26 +1,26 @@
 {{ if .Values.enabled }}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: pipelines
-spec:
-  selector:
-    matchLabels:
-      app: pipelines
-  replicas: 1
-  revisionHistoryLimit: 2
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: pipelines
-    spec:
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: pipelines
+#spec:
+#  selector:
+#    matchLabels:
+#      app: pipelines
+#  replicas: 1
+#  revisionHistoryLimit: 2
+#  strategy:
+#    type: Recreate
+#  template:
+#    metadata:
+#      labels:
+#        app: pipelines
+#    spec:
 #      nodeSelector:
 #        # This node label is updated by apps/openbus/bin/update_node_allowed_ips.py script
 #        oknesset-allowed-ip: "true"
-      terminationGracePeriodSeconds: 5
-      containers:
+#      terminationGracePeriodSeconds: 5
+#      containers:
 #      - name: ssh-socks-proxy
 #        image: orihoch/ssh-socks-proxy@sha256:94faea572a5ff570d3dea92ca381909603e488c4162f36e56416648647ffd263
 #        resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "83Mi"}}
@@ -86,30 +86,30 @@ spec:
 #        - mountPath: /var/redis
 #          name: data
 #          subPath: redis
-      - name: presence
-        image: orihoch/knesset-data-k8s-presence@sha256:88818c1be3505f81d793ea4e847d1be5b3e5d79241bc45c7d9e4c849163fca27
-        resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "435Mi"}}
-        env:
-        - name: RESULTS_FILE
-          value: /pipelines/data/members/presence/presence.txt
-        volumeMounts:
-        - mountPath: /pipelines/data
-          name: data
-          subPath: data
-      volumes:
+#      - name: presence
+#        image: orihoch/knesset-data-k8s-presence@sha256:88818c1be3505f81d793ea4e847d1be5b3e5d79241bc45c7d9e4c849163fca27
+#        resources: {"requests": {"cpu": "11m", "memory": "83Mi"}, "limits": {"cpu": "78m", "memory": "435Mi"}}
+#        env:
+#        - name: RESULTS_FILE
+#          value: /pipelines/data/members/presence/presence.txt
+#        volumeMounts:
+#        - mountPath: /pipelines/data
+#          name: data
+#          subPath: data
+#      volumes:
 #      - name: k8s-ops
 #        secret:
 #          secretName: ops
-        - name: data
-          {{- if .Values.enableNfs }}
-          nfs:
-            server: {{ .Values.nfsServer }}
-            path: {{ .Values.nfsServerPath | default "/" | quote }}
-          {{- else if .Values.pvcName }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.pvcName }}
-          {{- else }}
-          gcePersistentDisk:
-            pdName: {{ .Values.persistentDiskName | quote }}
-          {{- end }}
+#        - name: data
+#          {{- if .Values.enableNfs }}
+#          nfs:
+#            server: {{ .Values.nfsServer }}
+#            path: {{ .Values.nfsServerPath | default "/" | quote }}
+#          {{- else if .Values.pvcName }}
+#          persistentVolumeClaim:
+#            claimName: {{ .Values.pvcName }}
+#          {{- else }}
+#          gcePersistentDisk:
+#            pdName: {{ .Values.persistentDiskName | quote }}
+#          {{- end }}
 {{ end }}
