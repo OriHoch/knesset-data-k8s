@@ -50,14 +50,7 @@ spec:
         secret:
           secretName: {{ .Values.htpasswdSecretName }}
       {{ end }}
-      {{- if .Values.pipelinesDataNfsServer }}
-      - name: pipelines-data
-        nfs:
-          server: {{ .Values.pipelinesDataNfsServer }}
-          path: {{ .Values.pipelinesDataNfsServerPath | default "/" | quote }}
-      {{- else if .Values.pipelinesDataPvcName }}
       - name: pipelines-data
         persistentVolumeClaim:
-          claimName: {{ .Values.pipelinesDataPvcName }}
-      {{- end }}
+          claimName: data2
 {{ end }}

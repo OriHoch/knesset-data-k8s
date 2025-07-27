@@ -89,7 +89,7 @@ spec:
 #              path: {{ .Values.airflow.homeNfsPath | quote }}
           - name: data
             persistentVolumeClaim:
-              claimName: {{ .Values.airflowScheduler.pvcName }}
+              claimName: data2
           - name: airflow-secret
             secret:
                 secretName: airflow
