@@ -1,0 +1,72 @@
+{{ if .Values.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web-ui-db
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: web-ui-db
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: web-ui-db
+        image: mongo
+        resources: {"requests": {"cpu": "10m", "memory": "50Mi"}, "limits": {"memory": "150Mi"}}
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "web-ui-db"
+              key: "ROOT_USERNAME"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "web-ui-db"
+              key: "ROOT_PASSWORD"
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: data
+          mountPath: /data/db
+      - name: web-ui-db-ui
+        image: mongo-express
+        ports:
+        - containerPort: 8081
+        env:
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "web-ui-db"
+              key: "ROOT_USERNAME"
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "web-ui-db"
+              key: "ROOT_PASSWORD"
+        - name: ME_CONFIG_BASICAUTH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "web-ui-db-ui"
+              key: "USERNAME"
+        - name: ME_CONFIG_BASICAUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "web-ui-db-ui"
+              key: "PASSWORD"
+        - name: ME_CONFIG_MONGODB_SERVER
+          value: localhost
+      volumes:
+      - name: data
+      {{ if .Values.persistentDiskName }}
+        gcePersistentDisk:
+          pdName: {{ .Values.persistentDiskName | quote }}
+      {{ else }}
+        emptyDir: {}
+      {{ end }}
+{{ end }}
