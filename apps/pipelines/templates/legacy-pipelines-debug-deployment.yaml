@@ -1,0 +1,65 @@
+{{ if true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: legacy-pipelines-debug
+spec:
+  selector:
+    matchLabels:
+      app: legacy-pipelines-debug
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: legacy-pipelines-debug
+    spec:
+      terminationGracePeriodSeconds: 1
+      restartPolicy: Never
+      containers:
+      - name: pipelines
+        image: {{ .Values.image | quote }}
+        resources: {"requests": {"cpu": "0.5", "memory": "1.5Gi"}, "limits": {"cpu": "1.5", "memory": "2Gi"}}
+        command:
+        - sleep
+        - "604800"  # 7 days
+        envFrom:
+          - configMapRef:
+              name: hasadna-proxy1
+        env:
+        - name: DPP_DB_ENGINE
+          valueFrom: { "secretKeyRef": { "name": "publicdb", "key": "DPP_DB_ENGINE" } }
+        - name: DUMP_TO_STORAGE
+          value: "1"
+        - name: DUMP_TO_SQL
+          value: "1"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /secret_service_key
+        - name: DISABLE_MEMBER_PERCENTS
+          value: "yes"
+        - name: TIKA_SERVER_ENDPOINT
+          value: http://tika:9998
+        - name: NO_PROXY
+          value: tika
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        volumeMounts:
+        - name: k8s-ops
+          mountPath: /secret_service_key
+          subPath: secret.json
+          readOnly: true
+        - mountPath: /pipelines/data
+          name: data
+          subPath: data
+        - mountPath: /pipelines/dist
+          name: data
+          subPath: dist
+      volumes:
+      - name: k8s-ops
+        secret:
+          secretName: ops
+      - name: data
+        persistentVolumeClaim:
+          claimName: data2
+{{ end }}
