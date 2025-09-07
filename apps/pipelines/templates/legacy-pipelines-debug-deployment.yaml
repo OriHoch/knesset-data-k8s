@@ -16,7 +16,6 @@ spec:
         app: legacy-pipelines-debug
     spec:
       terminationGracePeriodSeconds: 1
-      restartPolicy: Never
       containers:
       - name: pipelines
         image: {{ .Values.image | quote }}
