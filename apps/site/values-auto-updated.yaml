@@ -1,2 +1,2 @@
-backendImage: ghcr.io/hasadna/open-knesset-backend/open-knesset-backend:200f23aac19c700b44bef75db7804d350c22dab7
+backendImage: ghcr.io/hasadna/open-knesset-backend/open-knesset-backend:6dde7b98202aacea37a29f318aa98e79e97844ec
 frontendImage: ghcr.io/hasadna/open-knesset-frontend/open-knesset-frontend:9ac9f9736ae14ee52d503575ccfed794085445f5
