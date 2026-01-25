@@ -70,7 +70,9 @@ spec:
             - name: GOOGLE_SERVICE_ACCOUNT_JSON
               valueFrom: {"secretKeyRef": {"name": "airflow", "key": "google-service-account-key-json" }}
             - name: AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT
-              value: "120"
+              value: "360"
+            - name: AIRFLOW__SCHEDULER__DAG_FILE_PROCESSOR_TIMEOUT
+              value: "360"
           volumeMounts:
             - name: airflow-home
               mountPath: /var/airflow
