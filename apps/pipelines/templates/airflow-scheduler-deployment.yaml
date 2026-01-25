@@ -71,7 +71,7 @@ spec:
               valueFrom: {"secretKeyRef": {"name": "airflow", "key": "google-service-account-key-json" }}
             - name: AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT
               value: "360"
-            - name: AIRFLOW__DAG_PROCESSOR__DAG_FILE_PROCESSOR_TIMEOUT
+            - name: AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT
               value: "360"
           volumeMounts:
             - name: airflow-home
