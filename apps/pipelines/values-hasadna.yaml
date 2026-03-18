@@ -27,8 +27,8 @@ airflowScheduler:
 airflow:
   nfsServer: "172.16.0.9"
   homeNfsPath: "/oknesset/airflow-home"
-  enableEmails: false
-  AIRFLOW__SMTP__SMTP_MAIL_FROM: "Knesset Data Airflow <knesset-data-airflow@hasadna.org.il>"
+  enableEmails: true
+  AIRFLOW__SMTP__SMTP_MAIL_FROM: "Knesset Data Airflow <oknesset-airflow@hasadna.org.il>"
   AIRFLOW__WEBSERVER__BASE_URL: "https://airflow.oknesset.org"
 
 danteNodePort: 30378
@@ -46,6 +46,11 @@ secrets:
     data:
       username: "~vault:Projects/oknesset/k8s-secrets:dante-username~"
       password: "~vault:Projects/oknesset/k8s-secrets:dante-password~"
+  - name: airflow-email
+    data:
+      AIRFLOW__SMTP__SMTP_HOST: "~vault:Projects/oknesset/k8s-secrets:airflow-smtp-host~"
+      AIRFLOW__SMTP__SMTP_USER: "~vault:Projects/oknesset/k8s-secrets:airflow-smtp-user~"
+      AIRFLOW__SMTP__SMTP_PASSWORD: "~vault:Projects/oknesset/k8s-secrets:airflow-smtp-password~"
 
 ingresses:
   - name: airflow
