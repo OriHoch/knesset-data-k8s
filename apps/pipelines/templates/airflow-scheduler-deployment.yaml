@@ -42,6 +42,8 @@ spec:
               valueFrom: {"secretKeyRef": {"name": "airflow-email", "key": "AIRFLOW__SMTP__SMTP_USER" }}
             - name: AIRFLOW__SMTP__SMTP_PASSWORD
               valueFrom: {"secretKeyRef": {"name": "airflow-email", "key": "AIRFLOW__SMTP__SMTP_PASSWORD" }}
+            - name: AIRFLOW_DEFAULT_EMAILS
+              valueFrom: {"secretKeyRef": {"name": "airflow-email", "key": "AIRFLOW_DEFAULT_EMAILS" }}
             {{ end }}
             {{ if .Values.airflow.AIRFLOW__WEBSERVER__BASE_URL }}
             - name: AIRFLOW__WEBSERVER__BASE_URL

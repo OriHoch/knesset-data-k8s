@@ -51,6 +51,7 @@ secrets:
       AIRFLOW__SMTP__SMTP_HOST: "~vault:Projects/oknesset/k8s-secrets:airflow-smtp-host~"
       AIRFLOW__SMTP__SMTP_USER: "~vault:Projects/oknesset/k8s-secrets:airflow-smtp-user~"
       AIRFLOW__SMTP__SMTP_PASSWORD: "~vault:Projects/oknesset/k8s-secrets:airflow-smtp-password~"
+      AIRFLOW_DEFAULT_EMAILS: "~vault:Projects/oknesset/k8s-secrets:airflow-default-emails~"
 
 ingresses:
   - name: airflow
